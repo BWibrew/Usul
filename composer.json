@@ -63,6 +63,10 @@
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta",
             "@php artisan optimize"
+        ],
+        "test": [
+            "./vendor/bin/phpcs",
+            "./vendor/bin/phpunit"
         ]
     },
     "config": {
