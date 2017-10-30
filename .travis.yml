@@ -2,6 +2,9 @@ language: php
 
 env:
   global:
+    - APP_ENV=local
+    - APP_KEY=base64:kS37T0FKPW74HVEtAedXR1Mub2/OTlHQ503Vn5Aaja8=
+    - DB_CONNECTION=testing
     - setup=stable
 
 matrix:
