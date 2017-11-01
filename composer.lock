@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "634e4eca1d81c777e55e2a825eb3da36",
+    "content-hash": "d1c5300cb182e24eac694855a71b76a7",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -760,7 +760,7 @@
         },
         {
             "name": "mtdowling/cron-expression",
-            "version": "v1.2.0",
+            "version": "v1.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mtdowling/cron-expression.git",

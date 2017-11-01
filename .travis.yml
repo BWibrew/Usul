@@ -20,6 +20,10 @@ matrix:
     - php: 7.2
       env: setup=lowest
 
+cache:
+  directories:
+    - $HOME/.composer/cache
+
 before_install:
   - travis_retry composer self-update
 
@@ -28,4 +32,8 @@ install:
   - if [[ $setup = 'lowest' ]]; then travis_retry composer update --prefer-dist --no-interaction --prefer-lowest --prefer-stable --no-suggest; fi
 
 script:
-  - vendor/bin/phpunit --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
