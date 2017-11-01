@@ -6,7 +6,6 @@ use GuzzleHttp\Client;
 
 class Wordpress
 {
-
     protected $api;
 
     public function __construct()

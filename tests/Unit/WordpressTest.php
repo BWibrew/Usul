@@ -2,9 +2,8 @@
 
 namespace Tests\Unit;
 
-use App\ApiConnections\Wordpress;
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\ApiConnections\Wordpress;
 
 class WordpressTest extends TestCase
 {
