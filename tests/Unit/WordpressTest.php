@@ -23,4 +23,12 @@ class WordpressTest extends TestCase
 
         $this->assertEquals('https://demo.wp-api.org/wp-json/', $response);
     }
+
+    /** @test */
+    public function it_can_discover_namespaces()
+    {
+        $response = $this->wp->namespaces('https://demo.wp-api.org/wp-json/');
+
+        $this->assertContains('wp/v2', $response);
+    }
 }
