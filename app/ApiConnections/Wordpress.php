@@ -24,7 +24,7 @@ class Wordpress
     {
         $response = $this->api->request('GET', $uri)->getHeader('Link');
 
-        if (!count($response) > 0) {
+        if (! count($response) > 0) {
             return null;
         }
 
@@ -40,8 +40,22 @@ class Wordpress
      */
     public function namespaces(string $uri)
     {
-        $response = (string)$this->api->request('GET', $uri)->getBody();
+        $response = (string) $this->api->request('GET', $uri)->getBody();
 
         return json_decode($response, true)['namespaces'];
+    }
+
+    /**
+     * Get the site name.
+     *
+     * @param string $uri
+     *
+     * @return mixed
+     */
+    public function siteName(string $uri)
+    {
+        $response = (string) $this->api->request('GET', $uri)->getBody();
+
+        return json_decode($response, true)['name'];
     }
 }

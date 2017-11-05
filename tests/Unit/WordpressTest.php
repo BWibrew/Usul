@@ -31,4 +31,12 @@ class WordpressTest extends TestCase
 
         $this->assertContains('wp/v2', $response);
     }
+
+    /** @test */
+    public function it_can_retrieve_site_name()
+    {
+        $response = $this->wp->siteName('https://demo.wp-api.org/wp-json/');
+
+        $this->assertContains('WP REST API Demo', $response);
+    }
 }
