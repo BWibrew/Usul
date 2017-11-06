@@ -37,6 +37,6 @@ class WordpressTest extends TestCase
     {
         $response = $this->wp->siteName('https://demo.wp-api.org/wp-json/');
 
-        $this->assertContains('WP REST API Demo', $response);
+        $this->assertEquals('WP REST API Demo', $response);
     }
 }

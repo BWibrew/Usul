@@ -25,7 +25,7 @@ class Wordpress
         $response = $this->api->request('GET', $uri)->getHeader('Link');
 
         if (! count($response) > 0) {
-            return null;
+            return;
         }
 
         return str_replace(['<', '>'], '', explode(';', $response[0])[0]);
