@@ -14,7 +14,8 @@ class SiteTest extends TestCase
     protected $site;
     protected $wp;
 
-    public function setUp() {
+    public function setUp()
+    {
         parent::setUp();
 
         $this->wp = new Wordpress;
