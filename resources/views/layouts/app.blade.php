@@ -20,6 +20,12 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
+                    @auth
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item{{ Request::path() == 'sites' ? ' active' : '' }}"><a class="nav-link" href="{{ route('sites.index') }}">All Sites</a></li>
+                            <li class="nav-item{{ Request::path() == 'sites/create' ? ' active' : '' }}"><a class="nav-link" href="{{ route('sites.create') }}">New Site</a></li>
+                        </ul>
+                    @endauth
                     <ul class="navbar-nav ml-auto">
                         @guest
                             <li class="nav-item{{ Request::path() == 'login' ? ' active' : '' }}"><a class="nav-link" href="{{ route('login') }}">Login</a></li>
