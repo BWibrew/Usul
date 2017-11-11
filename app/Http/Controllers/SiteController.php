@@ -52,7 +52,7 @@ class SiteController extends Controller
 
         $this->populateFromApi($request->input('url'));
 
-        return redirect()->back();
+        return redirect()->route('sites.index');
     }
 
     /**

@@ -24,7 +24,7 @@ class NewSiteTest extends TestCase
     {
         $this->actingAs($this->user)->post('/sites', [
             'url' => 'https://demo.wp-api.org/'
-        ])->assertStatus(302);
+        ])->assertRedirect('/sites');
 
         $this->assertDatabaseHas('sites', [
             'url' => 'https://demo.wp-api.org/',
