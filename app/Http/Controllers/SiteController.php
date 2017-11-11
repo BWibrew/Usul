@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ApiConnections\Wordpress;
 use App\Site;
 use Illuminate\Http\Request;
 
@@ -45,7 +46,13 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'url' => 'required|url',
+        ]);
+
+        $this->populateFromApi($request->input('url'));
+
+        return redirect()->back();
     }
 
     /**
@@ -91,5 +98,21 @@ class SiteController extends Controller
     public function destroy(Site $site)
     {
         //
+    }
+
+    /**
+     * Store a new Site model and populate fields using the API response.
+     *
+     * @param string $url
+     */
+    public function populateFromApi(string $url)
+    {
+        $wp = new Wordpress;
+        $site = new Site;
+
+        $site->url = $url;
+        $site->root_uri = $wp->discover($url);
+        $site->name = $wp->siteName($site->root_uri);
+        $site->save();
     }
 }
