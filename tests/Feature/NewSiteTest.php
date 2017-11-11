@@ -22,6 +22,8 @@ class NewSiteTest extends TestCase
     /** @test */
     public function it_stores_new_site()
     {
+        $this->withoutMiddleware();
+
         $this->actingAs($this->user)->post('/sites', [
             'url' => 'https://demo.wp-api.org/'
         ])->assertRedirect('/sites');
