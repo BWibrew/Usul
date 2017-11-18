@@ -7,27 +7,23 @@ use App\ApiConnections\Wordpress;
 
 class WordpressTest extends TestCase
 {
-    protected $wp;
-
-    public function setUp()
-    {
-        parent::setUp();
-
-        $this->wp = new Wordpress;
-    }
+    protected $base_url = 'https://example.com/';
+    protected $root_uri = 'api/';
 
     /** @test */
     public function it_can_discover()
     {
-        $response = $this->wp->discover('https://demo.wp-api.org/');
+        $client = $this->mockClient(200, ['Link' => $this->base_url.$this->root_uri]);
+        $response = (new Wordpress($client))->discover($this->base_url);
 
-        $this->assertEquals('https://demo.wp-api.org/wp-json/', $response);
+        $this->assertEquals($this->base_url.$this->root_uri, $response);
     }
 
     /** @test */
     public function it_can_discover_namespaces()
     {
-        $response = $this->wp->namespaces('https://demo.wp-api.org/wp-json/');
+        $client = $this->mockClient(200, [], ['namespaces' => ['wp/v2', ]]);
+        $response = (new Wordpress($client))->namespaces($this->base_url.$this->root_uri);
 
         $this->assertContains('wp/v2', $response);
     }
@@ -35,8 +31,9 @@ class WordpressTest extends TestCase
     /** @test */
     public function it_can_retrieve_site_name()
     {
-        $response = $this->wp->siteName('https://demo.wp-api.org/wp-json/');
+        $client = $this->mockClient(200, [], ['name' => 'Example Site Name']);
+        $response = (new Wordpress($client))->siteName($this->base_url.$this->root_uri);
 
-        $this->assertEquals('WP REST API Demo', $response);
+        $this->assertEquals('Example Site Name', $response);
     }
 }

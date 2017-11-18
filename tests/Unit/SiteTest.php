@@ -12,20 +12,21 @@ class SiteTest extends TestCase
     use RefreshDatabase;
 
     protected $site;
-    protected $wp;
+    protected $base_url = 'https://example.com/';
+    protected $root_uri = 'api/';
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->wp = new Wordpress;
         $this->site = factory(Site::class)->create();
     }
 
     /** @test */
     public function it_can_discover_root_uri_from_api()
     {
-        $this->site->root_uri = $this->wp->discover('https://demo.wp-api.org/');
+        $client = $this->mockClient(200, ['Link' => $this->base_url]);
+        $this->site->root_uri = (new Wordpress($client))->discover($this->base_url);
         $this->site->save();
 
         $this->assertDatabaseHas('sites', ['root_uri' => $this->site->root_uri]);
@@ -34,7 +35,8 @@ class SiteTest extends TestCase
     /** @test */
     public function it_can_populate_name_from_api()
     {
-        $this->site->name = $this->wp->siteName('https://demo.wp-api.org/wp-json/');
+        $client = $this->mockClient(200, [], ['name' => 'Example Site Name']);
+        $this->site->name = (new Wordpress($client))->siteName($this->base_url.$this->root_uri);
         $this->site->save();
 
         $this->assertDatabaseHas('sites', ['name' => $this->site->name]);
@@ -43,7 +45,8 @@ class SiteTest extends TestCase
     /** @test */
     public function it_can_populate_namespaces_from_api()
     {
-        $this->site->namespaces = $this->wp->siteName('https://demo.wp-api.org/wp-json/');
+        $client = $this->mockClient(200, [], ['namespaces' => ['wp/v2', ]]);
+        $this->site->namespaces = json_encode((new Wordpress($client))->namespaces($this->base_url.$this->root_uri));
         $this->site->save();
 
         $this->assertDatabaseHas('sites', ['namespaces' => $this->site->namespaces]);
