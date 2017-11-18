@@ -25,11 +25,11 @@ class SiteTest extends TestCase
     /** @test */
     public function it_can_discover_root_uri_from_api()
     {
-        $client = $this->mockClient(200, ['Link' => $this->base_url]);
+        $client = $this->mockClient(200, ['Link' => $this->base_url.$this->root_uri]);
         $this->site->root_uri = (new Wordpress($client))->discover($this->base_url);
         $this->site->save();
 
-        $this->assertDatabaseHas('sites', ['root_uri' => $this->site->root_uri]);
+        $this->assertDatabaseHas('sites', ['root_uri' => $this->base_url.$this->root_uri]);
     }
 
     /** @test */
@@ -39,7 +39,7 @@ class SiteTest extends TestCase
         $this->site->name = (new Wordpress($client))->siteName($this->base_url.$this->root_uri);
         $this->site->save();
 
-        $this->assertDatabaseHas('sites', ['name' => $this->site->name]);
+        $this->assertDatabaseHas('sites', ['name' => 'Example Site Name']);
     }
 
     /** @test */
@@ -49,6 +49,6 @@ class SiteTest extends TestCase
         $this->site->namespaces = json_encode((new Wordpress($client))->namespaces($this->base_url.$this->root_uri));
         $this->site->save();
 
-        $this->assertDatabaseHas('sites', ['namespaces' => $this->site->namespaces]);
+        $this->assertDatabaseHas('sites', ['namespaces' => json_encode(['wp/v2'])]);
     }
 }
