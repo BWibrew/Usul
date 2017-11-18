@@ -23,15 +23,19 @@ class NewSiteTest extends TestCase
     public function it_stores_new_site()
     {
         $this->withoutMiddleware();
+        $this->mockResponses([
+            ['headers' => ['Link' => $this->api_base_url.$this->api_root_uri]],
+            ['body' => ['name' => 'Example Site Name']],
+        ]);
 
         $this->actingAs($this->user)->post('/sites', [
-            'url' => 'https://demo.wp-api.org/'
+            'url' => $this->api_base_url
         ])->assertRedirect('/sites');
 
         $this->assertDatabaseHas('sites', [
-            'url' => 'https://demo.wp-api.org/',
-            'root_uri' => 'https://demo.wp-api.org/wp-json/',
-            'name' => 'WP REST API Demo',
+            'url' => $this->api_base_url,
+            'root_uri' => $this->api_base_url.$this->api_root_uri,
+            'name' => 'Example Site Name',
         ]);
     }
 }

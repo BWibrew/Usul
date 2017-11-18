@@ -107,7 +107,7 @@ class SiteController extends Controller
      */
     public function populateFromApi(string $url)
     {
-        $wp = new Wordpress;
+        $wp = resolve('ApiConnections\Wordpress');
         $site = new Site;
 
         $site->url = $url;

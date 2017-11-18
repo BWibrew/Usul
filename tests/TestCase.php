@@ -13,25 +13,38 @@ abstract class TestCase extends BaseTestCase
 {
     use CreatesApplication;
 
+    protected $api_base_url = 'https://example.com/';
+    protected $api_root_uri = 'api/';
+
     /**
-     * Creates a new Guzzle client with a mock response.
+     * Creates queue of mock responses for the Guzzle client.
      *
-     * @param int $status_code
-     * @param array $headers
-     * @param array $body
+     * @param array $responses
      *
      * @return Client
      */
-    protected function mockClient($status_code = 200, $headers = [], $body = [])
+    protected function mockResponses(array $responses = [])
     {
-        $mock = new MockHandler([
-            new Response(
+        $queue = [];
+        foreach ($responses as $response) {
+            $status_code = isset($response['status_code']) ? $response['status_code'] : 200;
+            $headers = isset($response['headers']) ? $response['headers'] : [];
+            $body = isset($response['body']) ? $response['body'] : [];
+
+            array_push($queue, new Response(
                 $status_code,
                 $headers + ['Content-Type' => 'application/json'],
                 GuzzleHttp\json_encode($body)
-            ),
-        ]);
+            ));
+        }
 
-        return new Client(['handler' => HandlerStack::create($mock)]);
+        $mock = new MockHandler($queue);
+        $client = new Client(['handler' => HandlerStack::create($mock)]);
+        $this->app->instance('GuzzleHttp\Client', $client);
+    }
+
+    protected function mockResponse(array $response = [])
+    {
+        $this->mockResponses([$response]);
     }
 }

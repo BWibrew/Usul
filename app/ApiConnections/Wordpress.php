@@ -8,9 +8,9 @@ class Wordpress
 {
     protected $api;
 
-    public function __construct(Client $client = null)
+    public function __construct(Client $client)
     {
-        $this->api = $client ?: new Client;
+        $this->api = $client;
     }
 
     /**
