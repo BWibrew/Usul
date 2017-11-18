@@ -46,7 +46,7 @@ class SiteTest extends TestCase
     public function it_can_populate_namespaces_from_api()
     {
         $client = $this->mockClient(200, [], ['namespaces' => ['wp/v2', ]]);
-        $this->site->namespaces = json_encode((new Wordpress($client))->namespaces($this->base_url.$this->root_uri));
+        $this->site->namespaces = (new Wordpress($client))->namespaces($this->base_url.$this->root_uri);
         $this->site->save();
 
         $this->assertDatabaseHas('sites', ['namespaces' => json_encode(['wp/v2'])]);
