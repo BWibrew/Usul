@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\ApiConnections\Wordpress;
 use App\Site;
 use Illuminate\Http\Request;
 
