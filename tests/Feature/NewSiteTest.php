@@ -29,7 +29,7 @@ class NewSiteTest extends TestCase
         ]);
 
         $this->actingAs($this->user)->post('/sites', [
-            'url' => $this->api_base_url
+            'url' => $this->api_base_url,
         ])->assertRedirect('/sites');
 
         $this->assertDatabaseHas('sites', [
