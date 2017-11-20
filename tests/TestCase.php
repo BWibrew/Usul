@@ -43,8 +43,23 @@ abstract class TestCase extends BaseTestCase
         $this->app->instance('GuzzleHttp\Client', $client);
     }
 
+    /**
+     * Wrapper for mockResponses for use with a single response.
+     *
+     * @param array $response
+     */
     protected function mockResponse(array $response = [])
     {
         $this->mockResponses([$response]);
+    }
+
+    /**
+     * Resolve an instance of Wordpress from the service container.
+     *
+     * @return \App\ApiConnections\Wordpress;
+     */
+    protected function wordpress()
+    {
+        return $this->app->make('ApiConnections\Wordpress');
     }
 }

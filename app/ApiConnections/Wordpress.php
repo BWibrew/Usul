@@ -2,6 +2,7 @@
 
 namespace App\ApiConnections;
 
+use Exception;
 use GuzzleHttp\Client;
 
 class Wordpress
@@ -19,13 +20,14 @@ class Wordpress
      * @param string $uri
      *
      * @return mixed
+     * @throws Exception
      */
     public function discover(string $uri)
     {
         $response = $this->api->request('GET', $uri)->getHeader('Link');
 
         if (! count($response) > 0) {
-            return;
+            throw new Exception('API root could not be discovered');
         }
 
         return str_replace(['<', '>'], '', explode(';', $response[0])[0]);
