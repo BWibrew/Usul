@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Site;
+use Exception;
 use Illuminate\Http\Request;
 
 class SiteController extends Controller
 {
+    protected $wp;
+
     /**
      * Create a new controller instance.
      *
@@ -15,6 +18,8 @@ class SiteController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+
+        $this->wp = resolve('ApiConnections\Wordpress');
     }
 
     /**
@@ -49,9 +54,15 @@ class SiteController extends Controller
             'url' => 'required|url',
         ]);
 
-        $this->populateFromApi($request->input('url'));
+        $site = Site::create(['url' => $request->input('url')]);
 
-        return redirect()->route('sites.index');
+        try {
+            $site = $this->populateFromApi($site);
+        } catch (Exception $e) {
+            return redirect()->route('sites.edit', $site)->with('discovery', 'fail');
+        }
+
+        return redirect()->route('sites.show', $site);
     }
 
     /**
@@ -102,16 +113,16 @@ class SiteController extends Controller
     /**
      * Store a new Site model and populate fields using the API response.
      *
-     * @param string $url
+     * @param Site $site
+     *
+     * @return Site
      */
-    public function populateFromApi(string $url)
+    public function populateFromApi(Site $site)
     {
-        $wp = resolve('ApiConnections\Wordpress');
-        $site = new Site;
-
-        $site->url = $url;
-        $site->root_uri = $wp->discover($url);
-        $site->name = $wp->siteName($site->root_uri);
+        $site->root_uri = $this->wp->discover($site->url);
+        $site->name = $this->wp->siteName($site->root_uri);
         $site->save();
+
+        return $site;
     }
 }
