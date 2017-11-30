@@ -21,31 +21,42 @@ class SitesIndexTest extends TestCase
 
         $this->site = factory(Site::class)->create();
         $this->user = factory(User::class)->create();
-        $this->response = $this->actingAs($this->user)->get('/sites');
+    }
+
+    /** @test */
+    public function a_guest_cannot_view_index()
+    {
+        $this->get('/sites')->assertRedirect('/login');
     }
 
     /** @test */
     public function it_lists_site_id_and_name()
     {
-        $this->response->assertSee((string) $this->site->id)
-                       ->assertSee($this->site->name);
+        $this->login()
+             ->assertSee((string) $this->site->id)
+             ->assertSee($this->site->name);
     }
 
     /** @test */
     public function it_lists_site_url()
     {
-        $this->response->assertSee($this->site->url);
+        $this->login()->assertSee($this->site->url);
     }
 
     /** @test */
     public function it_links_to_remote_url()
     {
-        $this->response->assertSee('href="'.$this->site->url.'"');
+        $this->login()->assertSee('href="'.$this->site->url.'"');
     }
 
     /** @test */
     public function it_links_to_detail_page()
     {
-        $this->response->assertSee('href="http://usul.app/sites/'.$this->site->id.'"');
+        $this->login()->assertSee('href="http://usul.app/sites/'.$this->site->id.'"');
+    }
+
+    protected function login()
+    {
+        return $this->actingAs($this->user)->get('/sites');
     }
 }

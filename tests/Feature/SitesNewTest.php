@@ -6,7 +6,7 @@ use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class NewSiteTest extends TestCase
+class SitesNewTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -33,6 +33,25 @@ class NewSiteTest extends TestCase
         ])->assertRedirect('/sites/1/');
 
         $this->assertDatabaseHas('sites', [
+            'url' => $this->api_base_url,
+            'root_uri' => $this->api_base_url.$this->api_root_uri,
+            'name' => 'Example Site Name',
+        ]);
+    }
+
+    /** @test */
+    public function a_guest_cannot_store_a_new_site()
+    {
+        $this->mockResponses([
+            ['headers' => ['Link' => $this->api_base_url.$this->api_root_uri]],
+            ['body' => ['name' => 'Example Site Name']],
+        ]);
+
+        $this->post('/sites', [
+            'url' => $this->api_base_url,
+        ])->assertRedirect('/login');
+
+        $this->assertDatabaseMissing('sites', [
             'url' => $this->api_base_url,
             'root_uri' => $this->api_base_url.$this->api_root_uri,
             'name' => 'Example Site Name',
