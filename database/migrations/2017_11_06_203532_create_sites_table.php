@@ -20,6 +20,7 @@ class CreateSitesTable extends Migration
             $table->string('root_uri')->nullable();
             $table->json('namespaces')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

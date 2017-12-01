@@ -84,7 +84,7 @@ class SiteController extends Controller
      */
     public function edit(Site $site)
     {
-        //
+        return view('sites.edit', ['site' => $site]);
     }
 
     /**
@@ -96,18 +96,33 @@ class SiteController extends Controller
      */
     public function update(Request $request, Site $site)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'url' => 'required|url',
+            'root_uri' => 'required|url',
+        ]);
+
+        $site->name = $request->get('name');
+        $site->url = $request->get('url');
+        $site->root_uri = $request->get('root_uri');
+        $site->save();
+
+        return redirect()->route('sites.edit', $site);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Site  $site
+     * @param  \App\Site $site
+     *
      * @return \Illuminate\Http\Response
+     * @throws Exception
      */
     public function destroy(Site $site)
     {
-        //
+        $site->delete();
+
+        return redirect()->route('sites.index');
     }
 
     /**
