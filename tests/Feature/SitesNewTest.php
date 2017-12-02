@@ -59,7 +59,7 @@ class SitesNewTest extends TestCase
     }
 
     /** @test */
-    public function it_will_redirect_to_manual_entry_if_discovery_fails()
+    public function it_will_redirect_to_edit_page_if_discovery_fails()
     {
         $this->withoutMiddleware();
         $this->mockResponses([[]]);

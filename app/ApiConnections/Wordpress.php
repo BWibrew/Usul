@@ -24,7 +24,13 @@ class Wordpress
      */
     public function discover(string $uri)
     {
-        $response = $this->api->request('GET', $uri)->getHeader('Link');
+        $response = $this->apiGet($uri);
+
+        if ($response->getStatusCode() !== 200) {
+            throw new Exception('Could not connect to URL.');
+        }
+
+        $response = $response->getHeader('Link');
 
         if (! count($response) > 0) {
             throw new Exception('API root could not be discovered');
@@ -42,7 +48,7 @@ class Wordpress
      */
     public function namespaces(string $uri)
     {
-        $response = (string) $this->api->request('GET', $uri)->getBody();
+        $response = (string) $this->apiGet($uri)->getBody();
 
         return json_decode($response, true)['namespaces'];
     }
@@ -56,8 +62,31 @@ class Wordpress
      */
     public function siteName(string $uri)
     {
-        $response = (string) $this->api->request('GET', $uri)->getBody();
+        $response = (string) $this->apiGet($uri)->getBody();
 
         return json_decode($response, true)['name'];
+    }
+
+    /**
+     * Check for successful connection to remote API.
+     *
+     * @param string $uri
+     *
+     * @return bool
+     */
+    public function apiConnected(string $uri)
+    {
+        $response = $this->apiGet($uri);
+
+        if ($response->getStatusCode() !== 200 || is_null(json_decode($response->getBody()))) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function apiGet(string $uri)
+    {
+        return $this->api->request('GET', $uri);
     }
 }
