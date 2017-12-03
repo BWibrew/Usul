@@ -2,11 +2,7 @@ language: php
 
 env:
   global:
-    - APP_ENV=local
     - APP_KEY=base64:kS37T0FKPW74HVEtAedXR1Mub2/OTlHQ503Vn5Aaja8=
-    - APP_URL=http://usul.app
-    - DB_CONNECTION=testing
-    - setup=stable
 
 matrix:
   fast_finish: true

@@ -116,7 +116,6 @@ class SitesEditTest extends TestCase
     /** @test */
     public function it_soft_deletes()
     {
-
         $this->signIn()->delete('/sites/'.$this->site->id)->assertRedirect('/sites');
 
         $this->assertSoftDeleted('sites', ['id' => $this->site->id]);
