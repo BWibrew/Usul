@@ -48,7 +48,9 @@ class SitesDetailTest extends TestCase
     /** @test */
     public function it_links_to_edit_page()
     {
-        $this->signIn()->get('/sites/'.$this->site->id)->assertSee('/sites/'.$this->site->id.'/edit');
+        $this->signIn()
+             ->get('/sites/'.$this->site->id)
+             ->assertSee('href="'.url('/sites/'.$this->site->id.'/edit').'"');
     }
 
     /** @test */

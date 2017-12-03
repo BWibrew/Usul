@@ -27,7 +27,7 @@
                                 <tr>
                                     <th scope="row">{{ $site->id }}</th>
                                     <th><a href="{{ route('sites.show', $site) }}">{{ $site->name }}</a></th>
-                                    <th><a href="{{ $site->url }}">{{ $site->url }}</a></th>
+                                    <th><a href="{{ $site->url }}" target="_blank">{{ $site->url }}</a></th>
                                 </tr>
                             @endforeach
                         </tbody>

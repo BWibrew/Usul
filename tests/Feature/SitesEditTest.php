@@ -130,4 +130,12 @@ class SitesEditTest extends TestCase
 
         $this->assertDatabaseHas('sites', ['id' => $this->site->id]);
     }
+
+    /** @test */
+    public function it_links_to_detail_page()
+    {
+        $this->signIn()
+             ->get('/sites/'.$this->site->id.'/edit')
+             ->assertSee('href="'.url('/sites/'.$this->site->id).'"');
+    }
 }

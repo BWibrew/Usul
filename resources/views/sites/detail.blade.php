@@ -21,7 +21,7 @@
                                 <p><strong>URL:</strong></p>
                             </div>
                             <div class="col-md-9">
-                                <p>{{ $site->url }}</p>
+                                <a href="{{ $site->url }}" target="_blank">{{ $site->url }}</a>
                             </div>
                         </div>
                         <div class="row">
