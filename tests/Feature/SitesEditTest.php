@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Site;
-use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -11,58 +10,55 @@ class SitesEditTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected $user;
+    protected $site;
 
     public function setUp()
     {
         parent::setUp();
 
-        $this->user = factory(User::class)->create();
+        $this->site = factory(Site::class)->create();
     }
 
     /** @test */
     public function it_displays_name()
     {
-        $site = factory(Site::class)->create();
-        $this->actingAs($this->user)->get('/sites/'.$site->id.'/edit')->assertSee($site->name);
+        $this->signIn()->get('/sites/'.$this->site->id.'/edit')->assertSee($this->site->name);
     }
 
     /** @test */
     public function it_displays_url()
     {
-        $site = factory(Site::class)->create();
-        $this->actingAs($this->user)->get('/sites/'.$site->id.'/edit')->assertSee($site->url);
+        $this->signIn()->get('/sites/'.$this->site->id.'/edit')->assertSee($this->site->url);
     }
 
     /** @test */
     public function it_displays_root_uri()
     {
-        $site = factory(Site::class)->create();
-        $this->actingAs($this->user)->get('/sites/'.$site->id.'/edit')->assertSee($site->root_uri);
+        $this->signIn()->get('/sites/'.$this->site->id.'/edit')->assertSee($this->site->root_uri);
     }
 
     /** @test */
     public function it_displays_warning_notice_if_discovery_failed()
     {
-        $site = factory(Site::class)->create();
-        $this->actingAs($this->user)
+        $this->signIn()
             ->withSession(['discovery' => 'fail'])
-            ->get('/sites/'.$site->id.'/edit')
+            ->get('/sites/'.$this->site->id.'/edit')
             ->assertSee('Automatic discovery has failed. Please manually enter the information below.');
     }
 
     /** @test */
     public function a_guest_cannot_view_edit_page()
     {
-        $site = factory(Site::class)->create();
-        $this->get('/sites/'.$site->id.'/edit')->assertRedirect('/login');
+        $this->withExceptionHandling();
+
+        $this->get('/sites/'.$this->site->id.'/edit')->assertRedirect('/login');
     }
 
     /** @test */
     public function it_updates_name()
     {
         $site = factory(Site::class)->create(['name' => 'name']);
-        $this->actingAs($this->user)
+        $this->signIn()
              ->patch('/sites/'.$site->id, [
                  'name' => 'new name',
                  'url' => 'http://example.com',
@@ -79,7 +75,7 @@ class SitesEditTest extends TestCase
     public function it_updates_url()
     {
         $site = factory(Site::class)->create(['url' => 'http://example.com']);
-        $this->actingAs($this->user)
+        $this->signIn()
              ->patch('/sites/'.$site->id, [
                  'name' => 'name',
                  'url' => 'http://example2.com',
@@ -96,7 +92,7 @@ class SitesEditTest extends TestCase
     public function it_updates_root_uri()
     {
         $site = factory(Site::class)->create(['root_uri' => 'http://example.com/api']);
-        $this->actingAs($this->user)
+        $this->signIn()
              ->patch('/sites/'.$site->id, [
                  'name' => 'name',
                  'url' => 'http://example.com',
@@ -112,27 +108,27 @@ class SitesEditTest extends TestCase
     /** @test */
     public function a_guest_cannot_update()
     {
-        $site = factory(Site::class)->create();
-        $this->patch('/sites/'.$site->id)->assertRedirect('/login');
+        $this->withExceptionHandling();
+
+        $this->patch('/sites/'.$this->site->id)->assertRedirect('/login');
     }
 
     /** @test */
     public function it_soft_deletes()
     {
-        $site = factory(Site::class)->create();
 
-        $this->actingAs($this->user)->delete('/sites/'.$site->id)->assertRedirect('/sites');
+        $this->signIn()->delete('/sites/'.$this->site->id)->assertRedirect('/sites');
 
-        $this->assertSoftDeleted('sites', ['id' => $site->id]);
+        $this->assertSoftDeleted('sites', ['id' => $this->site->id]);
     }
 
     /** @test */
     public function a_guest_cannot_delete()
     {
-        $site = factory(Site::class)->create();
+        $this->withExceptionHandling();
 
-        $this->delete('/sites/'.$site->id)->assertRedirect('/login');
+        $this->delete('/sites/'.$this->site->id)->assertRedirect('/login');
 
-        $this->assertDatabaseHas('sites', ['id' => $site->id]);
+        $this->assertDatabaseHas('sites', ['id' => $this->site->id]);
     }
 }

@@ -2,22 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\User;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class SitesNewTest extends TestCase
 {
     use RefreshDatabase;
-
-    protected $user;
-
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $this->user = factory(User::class)->create();
-    }
 
     /** @test */
     public function it_stores_new_site()
@@ -28,7 +18,7 @@ class SitesNewTest extends TestCase
             ['body' => ['name' => 'Example Site Name']],
         ]);
 
-        $this->actingAs($this->user)->post('/sites', [
+        $this->signIn()->post('/sites', [
             'url' => $this->api_base_url,
         ])->assertRedirect('/sites/1/');
 
@@ -42,6 +32,8 @@ class SitesNewTest extends TestCase
     /** @test */
     public function a_guest_cannot_store_a_new_site()
     {
+        $this->withExceptionHandling();
+
         $this->mockResponses([
             ['headers' => ['Link' => $this->api_base_url.$this->api_root_uri]],
             ['body' => ['name' => 'Example Site Name']],
@@ -64,7 +56,7 @@ class SitesNewTest extends TestCase
         $this->withoutMiddleware();
         $this->mockResponses([[]]);
 
-        $this->actingAs($this->user)->post('/sites', [
+        $this->signIn()->post('/sites', [
             'url' => $this->api_base_url,
         ])->assertRedirect('/sites/1/edit/')
           ->assertSessionHas('discovery', 'fail');

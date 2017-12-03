@@ -4,9 +4,11 @@ namespace Tests;
 
 use GuzzleHttp;
 use GuzzleHttp\Client;
+use App\Exceptions\Handler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
+use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 
 abstract class TestCase extends BaseTestCase
@@ -15,13 +17,54 @@ abstract class TestCase extends BaseTestCase
 
     protected $api_base_url = 'https://example.com/';
     protected $api_root_uri = 'api/';
+    protected $oldExceptionHandler;
+
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->disableExceptionHandling();
+    }
+
+    protected function signIn($user = null)
+    {
+        $user = $user ?: factory('App\User')->create();
+
+        $this->actingAs($user);
+
+        return $this;
+    }
+
+    // hat tip: https://github.com/laracasts/Lets-Build-a-Forum-in-Laravel/blob/fde014c59935b174b913d8c91ab03d2c114dc886/tests/TestCase.php
+    protected function disableExceptionHandling()
+    {
+        $this->oldExceptionHandler = $this->app->make(ExceptionHandler::class);
+
+        $this->app->instance(ExceptionHandler::class, new class extends Handler {
+            public function __construct()
+            {
+            }
+            public function report(\Exception $e)
+            {
+            }
+            public function render($request, \Exception $e)
+            {
+                throw $e;
+            }
+        });
+    }
+
+    protected function withExceptionHandling()
+    {
+        $this->app->instance(ExceptionHandler::class, $this->oldExceptionHandler);
+
+        return $this;
+    }
 
     /**
      * Creates queue of mock responses for the Guzzle client.
      *
      * @param array $responses
-     *
-     * @return Client
      */
     protected function mockResponses(array $responses = [])
     {
