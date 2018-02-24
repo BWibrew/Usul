@@ -2,7 +2,7 @@
 
 use Faker\Generator as Faker;
 
-/** @var $factory \Illuminate\Database\Eloquent\Factory */
+/* @var $factory \Illuminate\Database\Eloquent\Factory */
 $factory->define(App\Site::class, function (Faker $faker) {
     return [
         'name' => $faker->words(3, true),
