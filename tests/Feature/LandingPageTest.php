@@ -14,8 +14,7 @@ class LandingPageTest extends TestCase
     {
         $this->withExceptionHandling();
 
-        $this->get('/')->assertRedirect('/sites');
-        $this->get('/sites')->assertRedirect('/login');
+        $this->get('/')->assertRedirect('/login');
     }
 
     /** @test */

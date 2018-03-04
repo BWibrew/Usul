@@ -15,12 +15,12 @@ class HomeController extends Controller
     }
 
     /**
-     * Show the application dashboard.
+     * Redirect home to sites index.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function index()
+    public function __invoke()
     {
-        return view('home');
+        return redirect(route('sites.index'));
     }
 }
