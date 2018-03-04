@@ -27,6 +27,7 @@
         "barryvdh/laravel-debugbar": "^3.1",
         "barryvdh/laravel-ide-helper": "^2.4.1",
         "codacy/coverage": "^1.4",
+        "doctrine/dbal": "^2.6",
         "filp/whoops": "~2.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
@@ -69,6 +70,11 @@
         "test": [
             "./vendor/bin/phpcs",
             "./vendor/bin/phpunit"
+        ],
+        "ide-helper": [
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:models",
+            "@php artisan ide-helper:meta"
         ]
     },
     "config": {
