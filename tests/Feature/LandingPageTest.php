@@ -20,7 +20,7 @@ class LandingPageTest extends TestCase
     /** @test */
     public function it_shows_sites_index_for_user()
     {
-        $this->signIn();
+        $this->logIn();
 
         $this->get('/')->assertRedirect('/sites');
     }

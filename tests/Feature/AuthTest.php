@@ -51,7 +51,7 @@ class AuthTest extends TestCase
     /** @test */
     public function it_can_log_out()
     {
-        $this->signIn();
+        $this->logIn();
 
         $this->assertTrue(Auth::check());
 

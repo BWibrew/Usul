@@ -13,17 +13,17 @@ class SitesNewTest extends TestCase
     public function it_stores_new_site()
     {
         $this->mockResponses([
-            ['headers' => ['Link' => $this->api_base_url.$this->api_root_uri]],
+            ['headers' => ['Link' => self::API_BASE_URL.self::API_ROOT_URI]],
             ['body' => ['name' => 'Example Site Name']],
         ]);
 
-        $this->signIn()->post('/sites', [
-            'url' => $this->api_base_url,
+        $this->logIn()->post('/sites', [
+            'url' => self::API_BASE_URL,
         ])->assertRedirect('/sites/1/');
 
         $this->assertDatabaseHas('sites', [
-            'url' => $this->api_base_url,
-            'root_uri' => $this->api_base_url.$this->api_root_uri,
+            'url' => self::API_BASE_URL,
+            'root_uri' => self::API_BASE_URL.self::API_ROOT_URI,
             'name' => 'Example Site Name',
         ]);
     }
@@ -34,17 +34,17 @@ class SitesNewTest extends TestCase
         $this->withExceptionHandling();
 
         $this->mockResponses([
-            ['headers' => ['Link' => $this->api_base_url.$this->api_root_uri]],
+            ['headers' => ['Link' => self::API_BASE_URL.self::API_ROOT_URI]],
             ['body' => ['name' => 'Example Site Name']],
         ]);
 
         $this->post('/sites', [
-            'url' => $this->api_base_url,
+            'url' => self::API_BASE_URL,
         ])->assertRedirect('/login');
 
         $this->assertDatabaseMissing('sites', [
-            'url' => $this->api_base_url,
-            'root_uri' => $this->api_base_url.$this->api_root_uri,
+            'url' => self::API_BASE_URL,
+            'root_uri' => self::API_BASE_URL.self::API_ROOT_URI,
             'name' => 'Example Site Name',
         ]);
     }
@@ -54,13 +54,13 @@ class SitesNewTest extends TestCase
     {
         $this->mockResponse([]);
 
-        $this->signIn()->post('/sites', [
-            'url' => $this->api_base_url,
+        $this->logIn()->post('/sites', [
+            'url' => self::API_BASE_URL,
         ])->assertRedirect('/sites/1/edit/')
-          ->assertSessionHas('discovery', 'fail');
+             ->assertSessionHas('discovery', 'fail');
 
         $this->assertDatabaseHas('sites', [
-            'url' => $this->api_base_url,
+            'url' => self::API_BASE_URL,
             'root_uri' => null,
             'name' => null,
         ]);

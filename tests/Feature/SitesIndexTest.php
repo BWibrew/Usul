@@ -30,24 +30,24 @@ class SitesIndexTest extends TestCase
     /** @test */
     public function it_lists_site_id_and_name()
     {
-        $this->signIn()->get('/sites')->assertSee((string) $this->site->id)->assertSee($this->site->name);
+        $this->logIn()->get('/sites')->assertSee((string) $this->site->id)->assertSee($this->site->name);
     }
 
     /** @test */
     public function it_lists_site_url()
     {
-        $this->signIn()->get('/sites')->assertSee($this->site->url);
+        $this->logIn()->get('/sites')->assertSee($this->site->url);
     }
 
     /** @test */
     public function it_links_to_remote_url()
     {
-        $this->signIn()->get('/sites')->assertSee('href="'.$this->site->url.'"');
+        $this->logIn()->get('/sites')->assertSee('href="' . $this->site->url . '"');
     }
 
     /** @test */
     public function it_links_to_detail_page()
     {
-        $this->signIn()->get('/sites')->assertSee('href="'.url('/sites/'.$this->site->id).'"');
+        $this->logIn()->get('/sites')->assertSee('href="' . url('/sites/' . $this->site->id) . '"');
     }
 }
