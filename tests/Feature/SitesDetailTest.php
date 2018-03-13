@@ -30,19 +30,19 @@ class SitesDetailTest extends TestCase
     /** @test */
     public function it_displays_name()
     {
-        $this->logIn()->get('/sites/' . $this->site->id)->assertSee($this->site->name);
+        $this->logIn()->get('/sites/'.$this->site->id)->assertSee($this->site->name);
     }
 
     /** @test */
     public function it_displays_url()
     {
-        $this->logIn()->get('/sites/' . $this->site->id)->assertSee($this->site->url);
+        $this->logIn()->get('/sites/'.$this->site->id)->assertSee($this->site->url);
     }
 
     /** @test */
     public function it_displays_root_uri()
     {
-        $this->logIn()->get('/sites/' . $this->site->id)->assertSee($this->site->root_uri);
+        $this->logIn()->get('/sites/'.$this->site->id)->assertSee($this->site->root_uri);
     }
 
     /** @test */
@@ -58,6 +58,6 @@ class SitesDetailTest extends TestCase
     {
         $this->mockResponse(['status_code' => 500]);
 
-        $this->logIn()->get('/sites/' . $this->site->id)->assertSee('Could not connect to API');
+        $this->logIn()->get('/sites/'.$this->site->id)->assertSee('Could not connect to API');
     }
 }

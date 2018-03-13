@@ -22,19 +22,19 @@ class SitesEditTest extends TestCase
     /** @test */
     public function it_displays_name()
     {
-        $this->logIn()->get('/sites/' . $this->site->id . '/edit')->assertSee($this->site->name);
+        $this->logIn()->get('/sites/'.$this->site->id.'/edit')->assertSee($this->site->name);
     }
 
     /** @test */
     public function it_displays_url()
     {
-        $this->logIn()->get('/sites/' . $this->site->id . '/edit')->assertSee($this->site->url);
+        $this->logIn()->get('/sites/'.$this->site->id.'/edit')->assertSee($this->site->url);
     }
 
     /** @test */
     public function it_displays_root_uri()
     {
-        $this->logIn()->get('/sites/' . $this->site->id . '/edit')->assertSee($this->site->root_uri);
+        $this->logIn()->get('/sites/'.$this->site->id.'/edit')->assertSee($this->site->root_uri);
     }
 
     /** @test */
@@ -116,7 +116,7 @@ class SitesEditTest extends TestCase
     /** @test */
     public function it_soft_deletes()
     {
-        $this->logIn()->delete('/sites/' . $this->site->id)->assertRedirect('/sites');
+        $this->logIn()->delete('/sites/'.$this->site->id)->assertRedirect('/sites');
 
         $this->assertSoftDeleted('sites', ['id' => $this->site->id]);
     }

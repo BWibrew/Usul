@@ -66,16 +66,16 @@ class SiteController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Site $site
-     * @param Wordpress $wp
+     * @param Wordpress $wpConnection
      *
      * @return \Illuminate\Http\Response
      */
-    public function show(Site $site, Wordpress $wp)
+    public function show(Site $site, Wordpress $wpConnection)
     {
         $status = null;
 
         try {
-            if (is_null($site->root_uri) || ! $wp->apiConnected($site->root_uri)) {
+            if (is_null($site->root_uri) || ! $wpConnection->apiConnected($site->root_uri)) {
                 $status = 'Could not connect to API!';
             }
         } catch (Exception $exception) {
@@ -147,16 +147,16 @@ class SiteController extends Controller
      */
     protected function populateFromApi(Site $site)
     {
-        $wp = resolve('ApiConnections\Wordpress');
+        $wpConnection = resolve('ApiConnections\Wordpress');
 
         try {
-            $site->root_uri = $wp->discover($site->url);
+            $site->root_uri = $wpConnection->discover($site->url);
         } catch (Exception $exception) {
             report($exception);
         }
 
         try {
-            $site->name = is_null($site->root_uri) ? null : $wp->siteName($site->root_uri);
+            $site->name = is_null($site->root_uri) ? null : $wpConnection->siteName($site->root_uri);
         } catch (Exception $exception) {
             report($exception);
         }

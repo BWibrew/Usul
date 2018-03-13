@@ -42,12 +42,12 @@ class SitesIndexTest extends TestCase
     /** @test */
     public function it_links_to_remote_url()
     {
-        $this->logIn()->get('/sites')->assertSee('href="' . $this->site->url . '"');
+        $this->logIn()->get('/sites')->assertSee('href="'.$this->site->url.'"');
     }
 
     /** @test */
     public function it_links_to_detail_page()
     {
-        $this->logIn()->get('/sites')->assertSee('href="' . url('/sites/' . $this->site->id) . '"');
+        $this->logIn()->get('/sites')->assertSee('href="'.url('/sites/'.$this->site->id).'"');
     }
 }

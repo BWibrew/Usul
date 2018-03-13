@@ -32,6 +32,7 @@
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
         "nunomaduro/collision": "~2.0",
+        "phpmd/phpmd": "^2.6",
         "phpunit/phpunit": "~7.0",
         "squizlabs/php_codesniffer": "^3.1",
         "symfony/thanks": "^1.0"
@@ -68,8 +69,9 @@
             "@php artisan package:discover"
         ],
         "test": [
-            "./vendor/bin/phpcs",
-            "./vendor/bin/phpunit"
+            "vendor/bin/phpcs",
+            "vendor/bin/phpmd . text phpmd.xml",
+            "vendor/bin/phpunit"
         ],
         "ide-helper": [
             "@php artisan ide-helper:generate",
