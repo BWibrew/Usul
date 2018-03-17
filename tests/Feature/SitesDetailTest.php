@@ -30,24 +30,32 @@ class SitesDetailTest extends TestCase
     /** @test */
     public function it_displays_name()
     {
+        $this->mockResponses([[], []]);
+
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee($this->site->name);
     }
 
     /** @test */
     public function it_displays_url()
     {
+        $this->mockResponses([[], []]);
+
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee($this->site->url);
     }
 
     /** @test */
     public function it_displays_root_uri()
     {
+        $this->mockResponses([[], []]);
+
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee($this->site->root_uri);
     }
 
     /** @test */
     public function it_links_to_edit_page()
     {
+        $this->mockResponses([[], []]);
+
         $this->logIn()
              ->get('/sites/'.$this->site->id)
              ->assertSee('href="'.url('/sites/'.$this->site->id.'/edit').'"');
@@ -56,8 +64,16 @@ class SitesDetailTest extends TestCase
     /** @test */
     public function it_displays_a_notice_if_api_cannot_be_reached()
     {
-        $this->mockResponse(['status_code' => 500]);
+        $this->mockResponses([['status_code' => 500], []]);
 
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee('Could not connect to API');
+    }
+
+    /** @test */
+    public function it_displays_wp_version()
+    {
+        $this->mockResponses([[], ['body' => '4.9.2']]);
+
+        $this->logIn()->get('/sites/'.$this->site->id)->assertSee('4.9.2');
     }
 }

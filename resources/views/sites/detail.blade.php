@@ -37,7 +37,7 @@
                                 <p><strong>WP Version:</strong></p>
                             </div>
                             <div class="col-md-9">
-                                <p>##</p>
+                                <p>{{ $site->version }}</p>
                             </div>
                         </div>
                     </div>

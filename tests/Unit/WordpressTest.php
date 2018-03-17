@@ -52,4 +52,14 @@ class WordpressTest extends TestCase
 
         $this->assertEquals('Example Site Name', $response);
     }
+
+    /** @test */
+    public function it_can_retrieve_version()
+    {
+        $this->mockResponse(['body' => '4.9.2']);
+
+        $response = $this->wordpress()->version(self::API_BASE_URL.self::API_ROOT_URI.'/wp-site-monitor/v1/wp-version');
+
+        $this->assertEquals('4.9.2', $response);
+    }
 }

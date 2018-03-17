@@ -7,6 +7,8 @@ use GuzzleHttp\Client;
 
 class Wordpress
 {
+    const URI_V1 = 'wp-site-monitor/v1/';
+
     protected $api;
 
     public function __construct(Client $client)
@@ -83,6 +85,19 @@ class Wordpress
         }
 
         return true;
+    }
+
+    /**
+     * @param string $uri
+     *
+     * @return string
+     */
+    public function version(string $uri)
+    {
+        $response = (string) $this->apiGet($uri.self::URI_V1.'wp-version')->getBody();
+        $response = json_decode($response, true);
+
+        return is_string($response) ? $response : null;
     }
 
     protected function apiGet(string $uri)
