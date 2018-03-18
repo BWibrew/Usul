@@ -83,8 +83,16 @@ class SiteController extends Controller
             $status = 'Could not connect to API!';
         }
 
+        try {
+            $wpVersion = $wpConnection->version($site->root_uri);
+        } catch (Exception $exception) {
+            report($exception);
+            $status = 'Could not connect to API! Error code: '.$exception->getCode();
+        }
+
         return view('sites.detail', [
             'site' => $site,
+            'wpVersion' => $wpVersion ?? '??',
             'status' => $status,
         ]);
     }

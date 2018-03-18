@@ -20,9 +20,7 @@ class WordpressTest extends TestCase
     {
         $this->expectException('Exception');
         $this->mockResponse();
-        $response = $this->wordpress()->discover(self::API_BASE_URL);
-
-        $this->assertEquals(self::API_BASE_URL.self::API_ROOT_URI, $response);
+        $this->wordpress()->discover(self::API_BASE_URL);
     }
 
     /** @test */
@@ -30,9 +28,7 @@ class WordpressTest extends TestCase
     {
         $this->expectException('Exception');
         $this->mockResponse(['status_code' => 500]);
-        $response = $this->wordpress()->discover(self::API_BASE_URL);
-
-        $this->assertEquals(self::API_BASE_URL.self::API_ROOT_URI, $response);
+        $this->wordpress()->discover(self::API_BASE_URL);
     }
 
     /** @test */
@@ -61,5 +57,38 @@ class WordpressTest extends TestCase
         $response = $this->wordpress()->version(self::API_BASE_URL.self::API_ROOT_URI.'/wp-site-monitor/v1/wp-version');
 
         $this->assertEquals('4.9.2', $response);
+    }
+
+    /** @test */
+    public function it_authenticates_using_json_web_tokens()
+    {
+        $expectedResponse = [
+            'token'             => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9qd3QuZGV2IiwiaWF0IjoxND
+                M4NTcxMDUwLCJuYmYiOjE0Mzg1NzEwNTAsImV4cCI6MTQzOTE3NTg1MCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.YNe6AyWW4
+                B7ZwfFE5wJ0O6qQ8QFcYizimDmBy6hCH_8',
+            'user_display_name' => 'admin',
+            'user_email'        => 'admin@localhost.dev',
+            'user_nicename'     => 'admin',
+        ];
+
+        $this->mockResponse(['body' => $expectedResponse]);
+
+        $response = $this->wordpress()->jwtAuth(self::API_BASE_URL.self::API_ROOT_URI, [
+            'username' => 'admin',
+            'password' => 'password',
+        ]);
+
+        $this->assertEquals($expectedResponse, $response);
+    }
+
+    /** @test */
+    public function it_throws_an_exception_when_json_web_token_authentication_fails()
+    {
+        $this->expectException('Exception');
+        $this->mockResponse(['status_code' => 403]);
+        $this->wordpress()->jwtAuth(self::API_BASE_URL.self::API_ROOT_URI, [
+            'username' => 'admin',
+            'password' => 'password',
+        ]);
     }
 }

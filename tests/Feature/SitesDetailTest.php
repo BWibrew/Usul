@@ -76,4 +76,12 @@ class SitesDetailTest extends TestCase
 
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee('4.9.2');
     }
+
+    /** @test */
+    public function it_displays_a_notice_when_api_is_not_authenticated()
+    {
+        $this->mockResponses([[], ['status_code' => 401]]);
+
+        $this->logIn()->get('/sites/'.$this->site->id)->assertSee('Could not connect to API! Error code: 401');
+    }
 }

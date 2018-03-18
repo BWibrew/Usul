@@ -9,6 +9,8 @@ class Wordpress
 {
     const URI_V1 = 'wp-site-monitor/v1/';
 
+    const JWT_URI = 'jwt-auth/v1/token/';
+
     protected $api;
 
     public function __construct(Client $client)
@@ -91,17 +93,32 @@ class Wordpress
      * @param string $uri
      *
      * @return string
+     * @throws Exception
      */
     public function version(string $uri)
     {
-        $response = (string) $this->apiGet($uri.self::URI_V1.'wp-version')->getBody();
+        $response = $this->apiGet($uri.self::URI_V1.'wp-version');
+
+        $response = (string) $response->getBody();
         $response = json_decode($response, true);
 
         return is_string($response) ? $response : null;
     }
 
+    public function jwtAuth(string $uri, array $parameters)
+    {
+        $response = (string) $this->apiPost($uri.self::JWT_URI, $parameters)->getBody();
+
+        return json_decode($response, true);
+    }
+
     protected function apiGet(string $uri)
     {
         return $this->api->request('GET', $uri);
+    }
+
+    protected function apiPost(string $uri, array $parameters)
+    {
+        return $this->api->request('POST', $uri, ['json' => $parameters]);
     }
 }
