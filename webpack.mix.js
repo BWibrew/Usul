@@ -15,7 +15,7 @@ mix.js('resources/assets/js/app.js', 'public/js')
    .sass('resources/assets/sass/app.scss', 'public/css');
 
 if (! mix.inProduction()) {
-    mix.browserSync('usul.app');
+    mix.browserSync('usul.test');
 }
 
 if (mix.inProduction()) {

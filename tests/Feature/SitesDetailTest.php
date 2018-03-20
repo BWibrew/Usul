@@ -66,7 +66,17 @@ class SitesDetailTest extends TestCase
     {
         $this->mockResponses([['status_code' => 500], []]);
 
-        $this->logIn()->get('/sites/'.$this->site->id)->assertSee('Could not connect to API');
+        $this->logIn()
+             ->get('/sites/' . $this->site->id)
+             ->assertViewHasAll([
+                 'isConnected' => false,
+                 'connection' => [
+                     'wp_rest' => false,
+                     'site_monitor' => true,
+                     'authenticated' => true,
+                 ],
+             ])
+             ->assertSee('API connection problem. Error code: 500');
     }
 
     /** @test */
@@ -82,6 +92,16 @@ class SitesDetailTest extends TestCase
     {
         $this->mockResponses([[], ['status_code' => 401]]);
 
-        $this->logIn()->get('/sites/'.$this->site->id)->assertSee('Could not connect to API! Error code: 401');
+        $this->logIn()
+             ->get('/sites/' . $this->site->id)
+             ->assertViewHasAll([
+                 'isConnected' => true,
+                 'connection'  => [
+                     'wp_rest'       => true,
+                     'site_monitor'  => true,
+                     'authenticated' => false,
+                 ],
+             ])
+             ->assertSee('API connection problem. Error code: 401');
     }
 }

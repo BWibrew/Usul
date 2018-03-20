@@ -73,27 +73,36 @@ class SiteController extends Controller
     public function show(Site $site, Wordpress $wpConnection)
     {
         $status = null;
+        $connection = [
+            'wp_rest' => true,
+            'site_monitor' => true,
+            'authenticated' => true,
+        ];
 
         try {
             if (is_null($site->root_uri) || ! $wpConnection->apiConnected($site->root_uri)) {
-                $status = 'Could not connect to API!';
+                $connection['wp_rest'] = false;
             }
         } catch (Exception $exception) {
             report($exception);
-            $status = 'Could not connect to API!';
+            $status = 'API connection problem. Error code: '.$exception->getCode();
+            $connection['wp_rest'] = false;
         }
 
         try {
             $wpVersion = $wpConnection->version($site->root_uri);
         } catch (Exception $exception) {
             report($exception);
-            $status = 'Could not connect to API! Error code: '.$exception->getCode();
+            $status = 'API connection problem. Error code: '.$exception->getCode();
+            $connection['authenticated'] = false;
         }
 
         return view('sites.detail', [
             'site' => $site,
             'wpVersion' => $wpVersion ?? '??',
             'status' => $status,
+            'connection' => $connection,
+            'isConnected' => $connection['wp_rest'],
         ]);
     }
 
