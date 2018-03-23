@@ -62,6 +62,16 @@ class SitesDetailTest extends TestCase
     }
 
     /** @test */
+    public function it_links_to_auth_settings_page()
+    {
+        $this->mockResponses([[], []]);
+
+        $this->logIn()
+             ->get('/sites/'.$this->site->id)
+             ->assertSee('href="'.url('/sites/'.$this->site->id.'/auth').'"');
+    }
+
+    /** @test */
     public function it_displays_a_notice_if_api_cannot_be_reached()
     {
         $this->mockResponses([['status_code' => 500], []]);

@@ -45,7 +45,7 @@
                 <div class="card mb-3">
                     <div class="card-header d-flex align-items-center">
                         Connection
-                        <a class="btn btn-info ml-auto" href="#">Settings</a>
+                        <a class="btn btn-info ml-auto" href="{{ route('sites.auth', $site) }}">Auth Settings</a>
                     </div>
 
                     <div class="card-body">
