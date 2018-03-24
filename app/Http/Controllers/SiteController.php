@@ -79,6 +79,9 @@ class SiteController extends Controller
             'authenticated' => true,
         ];
 
+        $wpConnection->authType = $site->auth_type ?: null;
+        $wpConnection->authToken = $site->auth_token ?: null;
+
         try {
             if (is_null($site->root_uri) || ! $wpConnection->apiConnected($site->root_uri)) {
                 $connection['wp_rest'] = false;

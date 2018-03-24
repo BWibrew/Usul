@@ -10,6 +10,19 @@ class Wordpress
     const URI_V1 = 'wp-site-monitor/v1/';
 
     const JWT_URI = 'jwt-auth/v1/token/';
+    /**
+     * Authentication token.
+     *
+     * @var string
+     */
+    public $authToken = '';
+
+    /**
+     * Authentication type.
+     *
+     * @var string
+     */
+    public $authType = null;
 
     protected $api;
 
@@ -114,11 +127,23 @@ class Wordpress
 
     protected function apiGet(string $uri)
     {
-        return $this->api->request('GET', $uri);
+        return $this->api->request('GET', $uri, ['headers' => $this->getAuth()]);
     }
 
     protected function apiPost(string $uri, array $parameters)
     {
         return $this->api->request('POST', $uri, ['json' => $parameters]);
+    }
+
+    protected function getAuth()
+    {
+        switch (strtolower($this->authType)) {
+            case 'jwt':
+                return [
+                    'Authorization' => 'Bearer '.$this->authToken,
+                ];
+            default:
+                return [];
+        }
     }
 }
