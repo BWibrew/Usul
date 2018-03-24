@@ -77,7 +77,7 @@ class SitesDetailTest extends TestCase
         $this->mockResponses([['status_code' => 500], []]);
 
         $this->logIn()
-             ->get('/sites/' . $this->site->id)
+             ->get('/sites/'.$this->site->id)
              ->assertViewHasAll([
                  'isConnected' => false,
                  'connection' => [
@@ -103,7 +103,7 @@ class SitesDetailTest extends TestCase
         $this->mockResponses([[], ['status_code' => 401]]);
 
         $this->logIn()
-             ->get('/sites/' . $this->site->id)
+             ->get('/sites/'.$this->site->id)
              ->assertViewHasAll([
                  'isConnected' => true,
                  'connection'  => [

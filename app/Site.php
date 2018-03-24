@@ -21,14 +21,4 @@ class Site extends Model
     protected $dates = [
         'deleted_at',
     ];
-
-    /**
-     * Get the site's WordPress version.
-     *
-     * @return string
-     */
-    public function getVersionAttribute()
-    {
-        return app(Wordpress::class)->version($this->root_uri);
-    }
 }

@@ -7,9 +7,20 @@ use GuzzleHttp\Client;
 
 class Wordpress
 {
-    const URI_V1 = 'wp-site-monitor/v1/';
+    /**
+     * URI v1 for 'WP Site Monitor' plugin.
+     *
+     * @const string
+     */
+    protected const WPSM_V1_URI = 'wp-site-monitor/v1/';
 
-    const JWT_URI = 'jwt-auth/v1/token/';
+    /**
+     * URI v1 for 'JWT Authentication for WP REST API' plugin.
+     *
+     * @const string
+     */
+    protected const JWT_V1_URI = 'jwt-auth/v1/token/';
+
     /**
      * Authentication token.
      *
@@ -24,8 +35,18 @@ class Wordpress
      */
     public $authType = null;
 
+    /**
+     * HTTP client to connect to remote site API.
+     *
+     * @var Client
+     */
     protected $api;
 
+    /**
+     * Create a new WordPress API connection instance.
+     *
+     * @param Client $client
+     */
     public function __construct(Client $client)
     {
         $this->api = $client;
@@ -110,7 +131,7 @@ class Wordpress
      */
     public function version(string $uri)
     {
-        $response = $this->apiGet($uri.self::URI_V1.'wp-version');
+        $response = $this->apiGet($uri.self::WPSM_V1_URI.'wp-version');
 
         $response = (string) $response->getBody();
         $response = json_decode($response, true);
@@ -118,24 +139,54 @@ class Wordpress
         return is_string($response) ? $response : null;
     }
 
+    /**
+     * Authenticate with JSON web tokens.
+     *
+     * @param string $uri
+     * @param array $parameters
+     *
+     * @return array
+     */
     public function jwtAuth(string $uri, array $parameters)
     {
-        $response = (string) $this->apiPost($uri.self::JWT_URI, $parameters)->getBody();
+        $response = (string) $this->apiPost($uri.self::JWT_V1_URI, $parameters)->getBody();
 
         return json_decode($response, true);
     }
 
+    /**
+     * Send GET request to API.
+     *
+     * @param string $uri
+     *
+     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     protected function apiGet(string $uri)
     {
-        return $this->api->request('GET', $uri, ['headers' => $this->getAuth()]);
+        return $this->api->request('GET', $uri, ['headers' => $this->getAuthHeaders()]);
     }
 
+    /**
+     * Send POST request to API.
+     *
+     * @param string $uri
+     * @param array $parameters
+     *
+     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
     protected function apiPost(string $uri, array $parameters)
     {
         return $this->api->request('POST', $uri, ['json' => $parameters]);
     }
 
-    protected function getAuth()
+    /**
+     * Get authentication headers.
+     *
+     * @return array
+     */
+    protected function getAuthHeaders()
     {
         switch (strtolower($this->authType)) {
             case 'jwt':
