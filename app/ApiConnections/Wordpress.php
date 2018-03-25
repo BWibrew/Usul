@@ -160,7 +160,6 @@ class Wordpress
      * @param string $uri
      *
      * @return mixed|\Psr\Http\Message\ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function apiGet(string $uri)
     {
@@ -174,7 +173,6 @@ class Wordpress
      * @param array $parameters
      *
      * @return mixed|\Psr\Http\Message\ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function apiPost(string $uri, array $parameters)
     {

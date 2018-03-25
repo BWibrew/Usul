@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\ApiConnections\Wordpress;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 

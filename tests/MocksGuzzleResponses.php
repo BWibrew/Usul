@@ -4,6 +4,7 @@ namespace Tests;
 
 use GuzzleHttp;
 use GuzzleHttp\Client;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Handler\MockHandler;
@@ -12,12 +13,17 @@ trait MocksGuzzleResponses
 {
     /**
      * Creates queue of mock responses for the Guzzle client.
+     * This method can return the requests history by reference.
      *
      * @param array $responses
+     *
+     * @return array
      */
-    protected function mockResponses(array $responses = [])
+    protected function &mockResponses(array $responses = [])
     {
+        $requestsHistory = [];
         $queue = [];
+
         foreach ($responses as $response) {
             $status_code = isset($response['status_code']) ? $response['status_code'] : 200;
             $headers = isset($response['headers']) ? $response['headers'] : [];
@@ -30,9 +36,12 @@ trait MocksGuzzleResponses
             ));
         }
 
-        $mock = new MockHandler($queue);
-        $client = new Client(['handler' => HandlerStack::create($mock)]);
-        $this->app->instance('GuzzleHttp\Client', $client);
+        $stack = HandlerStack::create(new MockHandler($queue));
+        $stack->push(Middleware::history($requestsHistory));
+
+        $this->app->instance('GuzzleHttp\Client', new Client(['handler' => $stack]));
+
+        return $requestsHistory;
     }
 
     /**

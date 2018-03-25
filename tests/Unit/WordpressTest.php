@@ -91,4 +91,36 @@ class WordpressTest extends TestCase
             'password' => 'password',
         ]);
     }
+
+    /** @test */
+    public function it_uses_jwt_auth_token_in_requests()
+    {
+        $token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9qd3QuZGV2IiwiaWF0IjoxNDM4NTcxMDUwLCJuYmY'
+            .'iOjE0Mzg1NzEwNTAsImV4cCI6MTQzOTE3NTg1MCwiZGF0YSI6eyJ1c2VyIjp7ImlkIjoiMSJ9fX0.YNe6AyWW4B7ZwfFE5wJ0O6qQ8QF'
+            .'cYizimDmBy6hCH_8';
+        $requests = &$this->mockResponses([
+            ['headers' => ['Link' => '']],
+            ['body' => ['namespaces' => '']],
+            ['body' => ['name' => '']],
+            [],
+            [],
+        ]);
+
+        $wpConnection = $this->wordpress();
+        $wpConnection->authType = 'jwt';
+        $wpConnection->authToken = $token;
+
+        $wpConnection->discover(self::API_BASE_URL.self::API_ROOT_URI);
+        $wpConnection->namespaces(self::API_BASE_URL.self::API_ROOT_URI);
+        $wpConnection->siteName(self::API_BASE_URL.self::API_ROOT_URI);
+        $wpConnection->apiConnected(self::API_BASE_URL.self::API_ROOT_URI);
+        $wpConnection->version(self::API_BASE_URL.self::API_ROOT_URI);
+
+
+        $this->assertCount(5, $requests);
+
+        foreach ($requests as $request) {
+            $this->assertEquals('Bearer '.$token, $request['request']->getHeader('Authorization')[0]);
+        }
+    }
 }
