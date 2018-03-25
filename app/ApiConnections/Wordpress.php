@@ -26,14 +26,14 @@ class Wordpress
      *
      * @var string
      */
-    public $authToken = '';
+    protected $authToken = '';
 
     /**
      * Authentication type.
      *
      * @var string
      */
-    public $authType = null;
+    protected $authType = null;
 
     /**
      * HTTP client to connect to remote site API.
@@ -152,6 +152,38 @@ class Wordpress
         $response = (string) $this->apiPost($uri.self::JWT_V1_URI, $parameters)->getBody();
 
         return json_decode($response, true);
+    }
+
+    /**
+     * Get or set the authentication token.
+     *
+     * @param string|null $authToken
+     *
+     * @return string
+     */
+    public function authToken($authToken = null)
+    {
+        if ($authToken) {
+            $this->authToken = $authToken;
+        }
+
+        return $this->authToken;
+    }
+
+    /**
+     * Get or set the authentication type.
+     *
+     * @param string|null $authType
+     *
+     * @return string
+     */
+    public function authType($authType = null)
+    {
+        if ($authType) {
+            $this->authType = $authType;
+        }
+
+        return $this->authType;
     }
 
     /**

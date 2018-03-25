@@ -79,8 +79,8 @@ class SiteController extends Controller
             'authenticated' => true,
         ];
 
-        $wpConnection->authType = $site->auth_type ?: null;
-        $wpConnection->authToken = $site->auth_token ?: null;
+        $wpConnection->authType($site->auth_type ?: null);
+        $wpConnection->authToken($site->auth_token ?: null);
 
         try {
             if (is_null($site->root_uri) || ! $wpConnection->apiConnected($site->root_uri)) {
@@ -167,7 +167,7 @@ class SiteController extends Controller
      */
     protected function populateFromApi(Site $site)
     {
-        $wpConnection = resolve('ApiConnections\Wordpress');
+        $wpConnection = app(Wordpress::class);
 
         try {
             $site->root_uri = $wpConnection->discover($site->url);
