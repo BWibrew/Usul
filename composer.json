@@ -69,6 +69,7 @@
             "@php artisan package:discover"
         ],
         "test": [
+            "./node_modules/.bin/eslint \"resources/assets/js/**/*.js\"",
             "vendor/bin/phpcs",
             "vendor/bin/phpmd . text phpmd.xml",
             "vendor/bin/phpunit"

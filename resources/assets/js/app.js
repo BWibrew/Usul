@@ -3,10 +3,10 @@ import vue from 'vue'
 import ExampleOptions from './components/ExampleComponent.vue'
 
 init()
-window.Vue = vue;
+window.Vue = vue
 
-Vue.component('example', ExampleOptions);
+Vue.component('example', ExampleOptions)
 
-const app = new Vue({
+new Vue({
     el: '#app'
-});
+})
