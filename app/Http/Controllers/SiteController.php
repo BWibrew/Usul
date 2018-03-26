@@ -100,12 +100,21 @@ class SiteController extends Controller
             $connection['authenticated'] = false;
         }
 
+        try {
+            $plugins = $wpConnection->plugins($site->root_uri);
+        } catch (Exception $exception) {
+            report($exception);
+            $status = 'API connection problem. Error code: '.$exception->getCode();
+            $connection['authenticated'] = false;
+        }
+
         return view('sites.detail', [
             'site' => $site,
-            'wpVersion' => $wpVersion ?? '??',
+            'wpVersion' => $wpVersion ?? 'Unknown',
             'status' => $status,
             'connection' => $connection,
             'isConnected' => $connection['wp_rest'],
+            'plugins' => $plugins ?? [],
         ]);
     }
 

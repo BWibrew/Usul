@@ -53,6 +53,38 @@ class Wordpress
     }
 
     /**
+     * Get or set the authentication token.
+     *
+     * @param string|null $authToken
+     *
+     * @return string
+     */
+    public function authToken($authToken = null)
+    {
+        if ($authToken) {
+            $this->authToken = $authToken;
+        }
+
+        return $this->authToken;
+    }
+
+    /**
+     * Get or set the authentication type.
+     *
+     * @param string|null $authType
+     *
+     * @return string
+     */
+    public function authType($authType = null)
+    {
+        if ($authType) {
+            $this->authType = $authType;
+        }
+
+        return $this->authType;
+    }
+
+    /**
      * Check if api is enabled and return root URI.
      *
      * @param string $uri
@@ -155,35 +187,15 @@ class Wordpress
     }
 
     /**
-     * Get or set the authentication token.
+     * @param string $uri
      *
-     * @param string|null $authToken
-     *
-     * @return string
+     * @return array
      */
-    public function authToken($authToken = null)
+    public function plugins(string $uri)
     {
-        if ($authToken) {
-            $this->authToken = $authToken;
-        }
+        $response = (string) $this->apiGet($uri.self::WPSM_V1_URI.'plugins')->getBody();
 
-        return $this->authToken;
-    }
-
-    /**
-     * Get or set the authentication type.
-     *
-     * @param string|null $authType
-     *
-     * @return string
-     */
-    public function authType($authType = null)
-    {
-        if ($authType) {
-            $this->authType = $authType;
-        }
-
-        return $this->authType;
+        return json_decode($response, true);
     }
 
     /**

@@ -75,12 +75,12 @@
                         </div>
                     </div>
                 </div>
-                <div class="card">
+                <div class="card mb-3">
                     <div class="card-header">
                         Plugins
                     </div>
                     <div class="card-body">
-                        <table class="table">
+                        <table class="table table-bordered">
                             <thead>
                             <tr>
                                 <th scope="col">Name</th>
@@ -89,11 +89,15 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <th scope="row">NAME</th>
-                                <td>1.0.0</td>
-                                <td>TRUE</td>
-                            </tr>
+                            @isset($plugins)
+                                @foreach($plugins as $plugin => $details)
+                                    <tr>
+                                        <th scope="row">{{ $details['Name'] }}</th>
+                                        <td>{{ $details['Version'] }}</td>
+                                        <td class="{{ $details['Active'] ? '' : 'table-warning' }}">{{ $details['Active'] ? 'True' : 'False' }}</td>
+                                    </tr>
+                                @endforeach
+                            @endisset
                             </tbody>
                         </table>
                     </div>

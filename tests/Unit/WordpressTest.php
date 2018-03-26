@@ -54,7 +54,7 @@ class WordpressTest extends TestCase
     {
         $this->mockResponse(['body' => '4.9.2']);
 
-        $response = $this->wordpress()->version(self::API_BASE_URL.self::API_ROOT_URI.'/wp-site-monitor/v1/wp-version');
+        $response = $this->wordpress()->version(self::API_BASE_URL.self::API_ROOT_URI);
 
         $this->assertEquals('4.9.2', $response);
     }
@@ -121,5 +121,51 @@ class WordpressTest extends TestCase
         foreach ($requests as $request) {
             $this->assertEquals('Bearer '.$token, $request['request']->getHeader('Authorization')[0]);
         }
+    }
+
+    /** @test */
+    public function it_can_retrieve_plugins_list()
+    {
+        $expectedPlugins = [
+            'akismet/akismet.php' => [
+                'Name' => 'Akismet Anti-Spam',
+                'PluginURI' => 'https://akismet.com/',
+                'Version' => '4.0.3',
+                'Description' => 'Used by millions, Akismet is quite possibly the best way in the world to <strong>'
+                                .'protect your blog from spam</strong>. It keeps your site protected even while you '
+                                .'sleep. To get started => activate the Akismet plugin and then go to your Akismet '
+                                .'Settings page to set up your API key.',
+                'Author' => 'Automattic',
+                'AuthorURI' => 'https://automattic.com/wordpress-plugins/',
+                'TextDomain' => 'akismet',
+                'DomainPath' => '',
+                'Network' => false,
+                'Title' => 'Akismet Anti-Spam',
+                'AuthorName' => 'Automattic',
+                'Active' => true,
+            ],
+            'hello-dolly/hello.php' => [
+                'Name' => 'Hello Dolly',
+                'PluginURI' => 'https://wordpress.org/plugins/hello-dolly/',
+                'Version' => '1.6',
+                'Description' => 'This is not just a plugin, it symbolizes the hope and enthusiasm of an entire '
+                                .'generation summed up in two words sung most famously by Louis Armstrong => Hello, '
+                                .'Dolly. When activated you will randomly see a lyric from <cite>Hello, Dolly</cite> '
+                                .'in the upper right of your admin screen on every page.',
+                'Author' => 'Matt Mullenweg',
+                'AuthorURI' => 'https://ma.tt/',
+                'TextDomain' => 'hello-dolly',
+                'DomainPath' => '',
+                'Network' => false,
+                'Title' => 'Hello Dolly',
+                'AuthorName' => 'Matt Mullenweg',
+                'Active' => false,
+            ],
+        ];
+        $this->mockResponse(['body' => $expectedPlugins]);
+
+        $response = $this->wordpress()->plugins(self::API_BASE_URL.self::API_ROOT_URI);
+
+        $this->assertEquals($expectedPlugins, $response);
     }
 }
