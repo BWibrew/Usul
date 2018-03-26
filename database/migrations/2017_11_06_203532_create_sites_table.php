@@ -18,7 +18,6 @@ class CreateSitesTable extends Migration
             $table->string('name')->nullable();
             $table->string('url');
             $table->string('root_uri')->nullable();
-            $table->json('namespaces')->nullable();
             $table->string('auth_type')->nullable();
             $table->string('auth_token')->nullable();
             $table->timestamps();

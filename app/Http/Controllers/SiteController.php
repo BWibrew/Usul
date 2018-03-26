@@ -72,7 +72,10 @@ class SiteController extends Controller
      */
     public function show(Site $site, Wordpress $wpConnection)
     {
-        $status = null;
+        $status = [];
+        $wpVersion = 'Unknown';
+        $plugins = [];
+        $namespaces = [];
         $connection = [
             'wp_rest' => true,
             'site_monitor' => true,
@@ -85,36 +88,54 @@ class SiteController extends Controller
         try {
             if (is_null($site->root_uri) || ! $wpConnection->apiConnected($site->root_uri)) {
                 $connection['wp_rest'] = false;
+                $connection['site_monitor'] = false;
+                $connection['authenticated'] = false;
             }
         } catch (Exception $exception) {
             report($exception);
-            $status = 'API connection problem. Error code: '.$exception->getCode();
+            $status['wp_rest'] = 'API connection problem. Error code: '.$exception->getCode();
             $connection['wp_rest'] = false;
+            $connection['site_monitor'] = false;
+            $connection['authenticated'] = false;
         }
 
         try {
             $wpVersion = $wpConnection->version($site->root_uri);
         } catch (Exception $exception) {
             report($exception);
-            $status = 'API connection problem. Error code: '.$exception->getCode();
+            $status['version'] = 'API connection problem. Error code: '.$exception->getCode();
             $connection['authenticated'] = false;
+        }
+
+        try {
+            $namespaces = $wpConnection->namespaces($site->root_uri);
+        } catch (Exception $exception) {
+            report($exception);
+            $status['wp_rest'] = 'API connection problem. Error code: '.$exception->getCode();
+            $connection['wp_rest'] = false;
+        }
+
+        if (! array_search('wp-site-monitor/v1', $namespaces)) {
+            $status['namespaces'] = 'WP Site Monitor not detected.';
+            $connection['site_monitor'] = false;
         }
 
         try {
             $plugins = $wpConnection->plugins($site->root_uri);
         } catch (Exception $exception) {
             report($exception);
-            $status = 'API connection problem. Error code: '.$exception->getCode();
+            $status['plugins'] = 'API connection problem. Error code: '.$exception->getCode();
             $connection['authenticated'] = false;
         }
 
         return view('sites.detail', [
             'site' => $site,
-            'wpVersion' => $wpVersion ?? 'Unknown',
+            'wpVersion' => $wpVersion,
             'status' => $status,
             'connection' => $connection,
             'isConnected' => $connection['wp_rest'],
-            'plugins' => $plugins ?? [],
+            'plugins' => $plugins,
+            'namespaces' => $namespaces,
         ]);
     }
 
@@ -188,6 +209,14 @@ class SiteController extends Controller
             $site->name = is_null($site->root_uri) ? null : $wpConnection->siteName($site->root_uri);
         } catch (Exception $exception) {
             report($exception);
+        }
+
+        if ($site->root_uri) {
+            try {
+                $site->namespaces = $wpConnection->namespaces($site->root_uri);
+            } catch (Exception $exception) {
+                report($exception);
+            }
         }
 
         $site->save();

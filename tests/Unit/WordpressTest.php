@@ -34,10 +34,10 @@ class WordpressTest extends TestCase
     /** @test */
     public function it_can_discover_namespaces()
     {
-        $this->mockResponse(['body' => ['namespaces' => ['wp/v2']]]);
+        $this->mockResponse(['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]]);
         $response = $this->wordpress()->namespaces(self::API_BASE_URL.self::API_ROOT_URI);
 
-        $this->assertContains('wp/v2', $response);
+        $this->assertEquals(['wp/v2', 'wp-site-monitor/v1'], $response);
     }
 
     /** @test */

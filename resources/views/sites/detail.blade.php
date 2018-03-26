@@ -4,11 +4,11 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 offset-md-2">
-                @if($status)
+                @isset($status['wp_rest'])
                     <div class="alert alert-danger" role="alert">
-                        {{ $status }}
+                        {{ $status['wp_rest'] }}
                     </div>
-                @endif
+                @endisset
                 <div class="card mb-3">
                     <div class="card-header d-flex align-items-center">
                         {{ $site->name }}
@@ -49,6 +49,16 @@
                     </div>
 
                     <div class="card-body">
+                        @isset($status['version'])
+                            <div class="alert alert-danger" role="alert">
+                                {{ $status['version'] }}
+                            </div>
+                        @endisset
+                        @isset($status['namespaces'])
+                            <div class="alert alert-danger" role="alert">
+                                {{ $status['namespaces'] }}
+                            </div>
+                        @endisset
                         <div class="row mb-3">
                             <div class="col-md-4">
                                 <span><strong>WordPress REST API:</strong></span>
@@ -73,6 +83,20 @@
                                 <span class="p-1 mb-2 text-white {{ $isConnected && $connection['site_monitor'] ? 'bg-success' : 'bg-danger' }}">{{ $isConnected && $connection['site_monitor'] ? 'Successful!' : 'Not Successful!' }}</span>
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <span><strong>API Namespaces:</strong></span>
+                            </div>
+                            <div class="col-md-8">
+                                <ul>
+                                    @isset($namespaces)
+                                        @foreach($namespaces as $namespace)
+                                            <li>{{ $namespace }}</li>
+                                        @endforeach
+                                    @endisset
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="card mb-3">
@@ -80,6 +104,11 @@
                         Plugins
                     </div>
                     <div class="card-body">
+                        @isset($status['plugins'])
+                            <div class="alert alert-danger" role="alert">
+                                {{ $status['plugins'] }}
+                            </div>
+                        @endisset
                         <table class="table table-bordered">
                             <thead>
                             <tr>
