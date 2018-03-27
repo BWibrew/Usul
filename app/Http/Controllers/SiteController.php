@@ -48,7 +48,7 @@ class SiteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'url' => 'required|url',
+            'url' => 'required|url|unique:sites,url',
         ]);
 
         $site = Site::create(['url' => $request->input('url')]);
@@ -209,14 +209,6 @@ class SiteController extends Controller
             $site->name = is_null($site->root_uri) ? null : $wpConnection->siteName($site->root_uri);
         } catch (Exception $exception) {
             report($exception);
-        }
-
-        if ($site->root_uri) {
-            try {
-                $site->namespaces = $wpConnection->namespaces($site->root_uri);
-            } catch (Exception $exception) {
-                report($exception);
-            }
         }
 
         $site->save();
