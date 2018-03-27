@@ -1,0 +1,61 @@
+version: 2
+
+jobs:
+  build:
+    docker:
+      - image: circleci/php:7.1.15-fpm-node-browsers
+        environment:
+          APP_KEY: base64:kS37T0FKPW74HVEtAedXR1Mub2/OTlHQ503Vn5Aaja8=
+
+    steps:
+      - checkout
+
+      # System
+      - run:
+          name: Install system dependencies
+          command: |
+            sudo apt update -yq
+            sudo apt install libpng12-dev -yq
+
+      # Composer
+      - restore_cache:
+          name: Restore Composer package cache
+          keys:
+            - composer-packages-{{ .Branch }}-{{ checksum "composer.json" }}
+            - composer-packages-{{ .Branch }}
+            - composer-packages-master
+            - composer-packages-
+      - run:
+          name: Run Composer
+          command: composer update --prefer-dist --no-interaction --prefer-stable --no-suggest
+      - save_cache:
+          name: Save Composer package cache
+          key: composer-packages-{{ .Branch }}-{{ checksum "composer.json" }}
+          paths:
+            - vendor
+
+      # Yarn
+      - restore_cache:
+          name: Restore Yarn package cache
+          keys:
+            - yarn-packages-{{ .Branch }}-{{ checksum "package.json" }}
+            - yarn-packages-{{ .Branch }}
+            - yarn-packages-master
+            - yarn-packages-
+      - run:
+          name: Run Yarn
+          command: |
+            yarn upgrade --non-interactive
+            yarn development
+      - save_cache:
+          name: Save Yarn package cache
+          key: yarn-packages-{{ .Branch }}-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+
+      # Tests
+      - run:
+          name: Run tests
+          command: |
+            vendor/bin/phpunit --coverage-clover coverage_clover.xml
+#            php vendor/bin/codacycoverage clover coverage_clover.xml
