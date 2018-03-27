@@ -51,7 +51,7 @@ class SiteController extends Controller
             'url' => 'required|url|unique:sites,url',
         ]);
 
-        $site = Site::create(['url' => $request->input('url')]);
+        $site = Site::create(['url' => trim($request->input('url'), '/\\')]);
 
         $site = $this->populateFromApi($site);
 
@@ -166,8 +166,8 @@ class SiteController extends Controller
         ]);
 
         $site->name = $request->get('name');
-        $site->url = $request->get('url');
-        $site->root_uri = $request->get('root_uri');
+        $site->url = trim($request->input('url'), '/\\');
+        $site->root_uri = trim($request->input('root_uri'), '/\\');
         $site->save();
 
         return redirect()->route('sites.edit', $site);
@@ -200,7 +200,7 @@ class SiteController extends Controller
         $wpConnection = app(Wordpress::class);
 
         try {
-            $site->root_uri = $wpConnection->discover($site->url);
+            $site->root_uri = trim($wpConnection->discover($site->url), '/\\');
         } catch (Exception $exception) {
             report($exception);
         }

@@ -9,8 +9,8 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication,
         MocksGuzzleResponses;
 
-    const API_BASE_URL = 'https://example.com/';
-    const API_ROOT_URI = 'api/';
+    const API_BASE_URL = 'https://example.com';
+    const API_ROOT_URI = 'api/v1';
 
     protected function setUp()
     {

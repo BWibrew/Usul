@@ -13,7 +13,7 @@ class SitesNewTest extends TestCase
     public function it_stores_new_site()
     {
         $this->mockResponses([
-            ['headers' => ['Link' => self::API_BASE_URL.self::API_ROOT_URI]],
+            ['headers' => ['Link' => self::API_BASE_URL.'/'.self::API_ROOT_URI]],
             ['body' => ['name' => 'Example Site Name']],
         ]);
 
@@ -23,7 +23,7 @@ class SitesNewTest extends TestCase
 
         $this->assertDatabaseHas('sites', [
             'url' => self::API_BASE_URL,
-            'root_uri' => self::API_BASE_URL.self::API_ROOT_URI,
+            'root_uri' => self::API_BASE_URL.'/'.self::API_ROOT_URI,
             'name' => 'Example Site Name',
         ]);
     }
@@ -34,7 +34,7 @@ class SitesNewTest extends TestCase
         $this->withExceptionHandling();
 
         $this->mockResponses([
-            ['headers' => ['Link' => self::API_BASE_URL.self::API_ROOT_URI]],
+            ['headers' => ['Link' => self::API_BASE_URL.'/'.self::API_ROOT_URI]],
             ['body' => ['name' => 'Example Site Name']],
         ]);
 
@@ -44,7 +44,7 @@ class SitesNewTest extends TestCase
 
         $this->assertDatabaseMissing('sites', [
             'url' => self::API_BASE_URL,
-            'root_uri' => self::API_BASE_URL.self::API_ROOT_URI,
+            'root_uri' => self::API_BASE_URL.'/'.self::API_ROOT_URI,
             'name' => 'Example Site Name',
         ]);
     }

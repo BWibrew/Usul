@@ -12,14 +12,14 @@ class Wordpress
      *
      * @const string
      */
-    protected const WPSM_V1_URI = 'wp-site-monitor/v1/';
+    protected const WPSM_V1_URI = 'wp-site-monitor/v1';
 
     /**
      * URI v1 for 'JWT Authentication for WP REST API' plugin.
      *
      * @const string
      */
-    protected const JWT_V1_URI = 'jwt-auth/v1/token/';
+    protected const JWT_V1_URI = 'jwt-auth/v1/token';
 
     /**
      * Authentication token.
@@ -163,7 +163,7 @@ class Wordpress
      */
     public function version(string $uri)
     {
-        $response = $this->apiGet($uri.self::WPSM_V1_URI.'wp-version');
+        $response = $this->apiGet($uri.'/'.self::WPSM_V1_URI.'/wp-version');
 
         $response = (string) $response->getBody();
         $response = json_decode($response, true);
@@ -181,7 +181,7 @@ class Wordpress
      */
     public function jwtAuth(string $uri, array $parameters)
     {
-        $response = (string) $this->apiPost($uri.self::JWT_V1_URI, $parameters)->getBody();
+        $response = (string) $this->apiPost($uri.'/'.self::JWT_V1_URI, $parameters)->getBody();
 
         return json_decode($response, true);
     }
@@ -193,7 +193,7 @@ class Wordpress
      */
     public function plugins(string $uri)
     {
-        $response = (string) $this->apiGet($uri.self::WPSM_V1_URI.'plugins')->getBody();
+        $response = (string) $this->apiGet($uri.'/'.self::WPSM_V1_URI.'/plugins')->getBody();
 
         return json_decode($response, true);
     }
