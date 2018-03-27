@@ -9,7 +9,7 @@ default_steps: &default_steps
         name: Install system dependencies
         command: |
           sudo apt update -yq
-          sudo apt install libpng12-dev -yq
+          sudo apt install libpng-dev -yq
 
     # Composer
     - restore_cache:
