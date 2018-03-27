@@ -178,13 +178,13 @@ class Wordpress
      * Authenticate with JSON web tokens.
      *
      * @param string $uri
-     * @param array $parameters
+     * @param array $credentials
      *
      * @return array
      */
-    public function jwtAuth(string $uri, array $parameters)
+    public function jwtAuth(string $uri, array $credentials)
     {
-        $response = (string) $this->apiPost($uri.'/'.self::JWT_V1_URI, $parameters)->getBody();
+        $response = (string) $this->apiPost($uri.'/'.self::JWT_V1_URI, ['json' => $credentials])->getBody();
 
         return json_decode($response, true);
     }
@@ -228,7 +228,7 @@ class Wordpress
      */
     protected function apiPost(string $uri, array $parameters)
     {
-        return $this->api->request('POST', $uri, ['json' => $parameters]);
+        return $this->api->request('POST', $uri, $parameters);
     }
 
     /**
