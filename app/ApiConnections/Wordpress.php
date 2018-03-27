@@ -163,7 +163,10 @@ class Wordpress
      */
     public function version(string $uri)
     {
-        $response = $this->apiGet($uri.'/'.self::WPSM_V1_URI.'/wp-version');
+        $response = $this->apiGet(
+            $uri.'/'.self::WPSM_V1_URI.'/wp-version',
+            ['headers' => $this->getAuthHeaders()]
+        );
 
         $response = (string) $response->getBody();
         $response = json_decode($response, true);
@@ -193,7 +196,10 @@ class Wordpress
      */
     public function plugins(string $uri)
     {
-        $response = (string) $this->apiGet($uri.'/'.self::WPSM_V1_URI.'/plugins')->getBody();
+        $response = (string) $this->apiGet(
+            $uri.'/'.self::WPSM_V1_URI.'/plugins',
+            ['headers' => $this->getAuthHeaders()]
+        )->getBody();
 
         return json_decode($response, true);
     }
@@ -203,11 +209,13 @@ class Wordpress
      *
      * @param string $uri
      *
+     * @param array $parameters
+     *
      * @return mixed|\Psr\Http\Message\ResponseInterface
      */
-    protected function apiGet(string $uri)
+    protected function apiGet(string $uri, array $parameters = [])
     {
-        return $this->api->request('GET', $uri, ['headers' => $this->getAuthHeaders()]);
+        return $this->api->request('GET', $uri, $parameters);
     }
 
     /**

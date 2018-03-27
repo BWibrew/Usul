@@ -110,13 +110,10 @@ class WordpressTest extends TestCase
         $wpConnection->authType('jwt');
         $wpConnection->authToken($token);
 
-        $wpConnection->discover(self::API_BASE_URL.self::API_ROOT_URI);
-        $wpConnection->namespaces(self::API_BASE_URL.self::API_ROOT_URI);
-        $wpConnection->siteName(self::API_BASE_URL.self::API_ROOT_URI);
-        $wpConnection->apiConnected(self::API_BASE_URL.self::API_ROOT_URI);
         $wpConnection->version(self::API_BASE_URL.self::API_ROOT_URI);
+        $wpConnection->plugins(self::API_BASE_URL.self::API_ROOT_URI);
 
-        $this->assertCount(5, $requests);
+        $this->assertCount(2, $requests);
 
         foreach ($requests as $request) {
             $this->assertEquals('Bearer '.$token, $request['request']->getHeader('Authorization')[0]);
