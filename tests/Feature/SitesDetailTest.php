@@ -104,7 +104,7 @@ class SitesDetailTest extends TestCase
             [],
             ['status_code' => 401],
             ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
-            []
+            [],
         ]);
 
         $this->logIn()

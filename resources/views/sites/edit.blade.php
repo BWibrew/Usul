@@ -74,7 +74,7 @@
                             <div class="form-group row">
                                 <div class="col-md-6 offset-md-4">
                                     <button type="submit" class="btn btn-success">Update</button>
-                                    <a class="btn btn-outline-secondary ml-3" href="{{ route('sites.show', $site) }}">Cancel</a>
+                                    <a class="btn btn-outline-secondary ml-3" href="{{ route('sites.show', $site) }}">Back</a>
                                 </div>
                             </div>
                         </form>
