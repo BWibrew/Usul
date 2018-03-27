@@ -1,61 +1,104 @@
 version: 2
 
+default_steps: &default_steps
+  steps:
+    - checkout
+
+    # System
+    - run:
+        name: Install system dependencies
+        command: |
+          sudo apt update -yq
+          sudo apt install libpng12-dev -yq
+
+    # Composer
+    - restore_cache:
+        name: Restore Composer package cache
+        keys:
+          - composer-packages-{{ .Branch }}-{{ checksum "composer.json" }}
+          - composer-packages-{{ .Branch }}
+          - composer-packages-master
+          - composer-packages-
+    - run:
+        name: Run Composer
+        command: |
+          if [[ $SETUP = 'stable' ]]; then  composer update --prefer-dist --no-interaction --prefer-stable --no-suggest; fi
+          if [[ $SETUP = 'lowest' ]]; then  composer update --prefer-dist --no-interaction --prefer-stable --no-suggest --prefer-lowest; fi
+    - save_cache:
+        name: Save Composer package cache
+        key: composer-packages-{{ .Branch }}-{{ checksum "composer.json" }}
+        paths:
+          - vendor
+
+    # Yarn
+    - restore_cache:
+        name: Restore Yarn package cache
+        keys:
+          - yarn-packages-{{ .Branch }}-{{ checksum "package.json" }}
+          - yarn-packages-{{ .Branch }}
+          - yarn-packages-master
+          - yarn-packages-
+    - run:
+        name: Run Yarn
+        command: |
+          yarn upgrade --non-interactive
+          yarn development
+    - save_cache:
+        name: Save Yarn package cache
+        key: yarn-packages-{{ .Branch }}-{{ checksum "package.json" }}
+        paths:
+          - node_modules
+
+    # Tests
+    - run:
+        name: Run tests
+        command: |
+          vendor/bin/phpunit --coverage-clover coverage_clover.xml
+          php vendor/bin/codacycoverage clover coverage_clover.xml
+
+
 jobs:
-  build:
+  php-7.1:
     docker:
-      - image: circleci/php:7.1.15-fpm-node-browsers
-        environment:
-          APP_KEY: base64:kS37T0FKPW74HVEtAedXR1Mub2/OTlHQ503Vn5Aaja8=
+      - image: circleci/php:7.1-node-browsers
+    environment:
+      APP_KEY: base64:kS37T0FKPW74HVEtAedXR1Mub2/OTlHQ503Vn5Aaja8=
+      SETUP: stable
 
-    steps:
-      - checkout
+    <<: *default_steps
 
-      # System
-      - run:
-          name: Install system dependencies
-          command: |
-            sudo apt update -yq
-            sudo apt install libpng12-dev -yq
+  php-7.1-lowest:
+    docker:
+      - image: circleci/php:7.1-node-browsers
+    environment:
+      APP_KEY: base64:kS37T0FKPW74HVEtAedXR1Mub2/OTlHQ503Vn5Aaja8=
+      SETUP: lowest
 
-      # Composer
-      - restore_cache:
-          name: Restore Composer package cache
-          keys:
-            - composer-packages-{{ .Branch }}-{{ checksum "composer.json" }}
-            - composer-packages-{{ .Branch }}
-            - composer-packages-master
-            - composer-packages-
-      - run:
-          name: Run Composer
-          command: composer update --prefer-dist --no-interaction --prefer-stable --no-suggest
-      - save_cache:
-          name: Save Composer package cache
-          key: composer-packages-{{ .Branch }}-{{ checksum "composer.json" }}
-          paths:
-            - vendor
+    <<: *default_steps
 
-      # Yarn
-      - restore_cache:
-          name: Restore Yarn package cache
-          keys:
-            - yarn-packages-{{ .Branch }}-{{ checksum "package.json" }}
-            - yarn-packages-{{ .Branch }}
-            - yarn-packages-master
-            - yarn-packages-
-      - run:
-          name: Run Yarn
-          command: |
-            yarn upgrade --non-interactive
-            yarn development
-      - save_cache:
-          name: Save Yarn package cache
-          key: yarn-packages-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+  php-7.2:
+    docker:
+      - image: circleci/php:7.2-node-browsers
+    environment:
+      APP_KEY: base64:kS37T0FKPW74HVEtAedXR1Mub2/OTlHQ503Vn5Aaja8=
+      SETUP: stable
 
-      # Tests
-      - run:
-          name: Run tests
-          command: |
-            vendor/bin/phpunit --coverage-clover coverage_clover.xml
-#            php vendor/bin/codacycoverage clover coverage_clover.xml
+    <<: *default_steps
+
+  php-7.2-lowest:
+    docker:
+      - image: circleci/php:7.2-node-browsers
+    environment:
+      APP_KEY: base64:kS37T0FKPW74HVEtAedXR1Mub2/OTlHQ503Vn5Aaja8=
+      SETUP: lowest
+
+    <<: *default_steps
+
+workflows:
+  version: 2
+  build:
+    jobs:
+      - php-7.1
+      - php-7.1-lowest
+      - php-7.2
+      - php-7.2-lowest
