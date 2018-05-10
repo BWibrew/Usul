@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "697f679c86d372962a099a456782b045",
+    "content-hash": "68d39e40f044adaecb54935f557c940c",
     "packages": [
         {
             "name": "bwibrew/laravel-gnu-terry-pratchett",
@@ -56,6 +56,73 @@
                 "laravel"
             ],
             "time": "2018-04-23T19:26:42+00:00"
+        },
+        {
+            "name": "bwibrew/laravel-sitesettings",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/BWibrew/laravel-sitesettings.git",
+                "reference": "8bc916a22591eed1e7dfc7535921e65ef32f7c26"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/BWibrew/laravel-sitesettings/zipball/8bc916a22591eed1e7dfc7535921e65ef32f7c26",
+                "reference": "8bc916a22591eed1e7dfc7535921e65ef32f7c26",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "^5.4",
+                "illuminate/support": "^5.4",
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "codacy/coverage": "^1.4",
+                "fzaninotto/faker": "^1.6",
+                "league/flysystem": "~1.0.8",
+                "mockery/mockery": "^0.9.9",
+                "orchestra/database": "^3.4.4",
+                "orchestra/testbench": "^3.4.12",
+                "phpmd/phpmd": "^2.6",
+                "phpunit/phpunit": "^5.7.27 || ^6.5 || ^7.1",
+                "spatie/laravel-medialibrary": "5.* || 6.*",
+                "squizlabs/php_codesniffer": "^3.0",
+                "symfony/thanks": "^1.0"
+            },
+            "suggest": {
+                "spatie/laravel-medialibrary": "Allows files to be uploaded and associated with settings."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "BWibrew\\SiteSettings\\SiteSettingsServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "BWibrew\\SiteSettings\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Benjamin Wibrew",
+                    "email": "benjamin.wibrew@gmail.com",
+                    "homepage": "http://benjaminwibrew.com"
+                }
+            ],
+            "description": "Persistent site settings for Laravel 5.4",
+            "keywords": [
+                "Settings",
+                "cms",
+                "laravel"
+            ],
+            "time": "2018-05-06T17:17:32+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -687,16 +754,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.6.20",
+            "version": "v5.6.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "3c11e7acc6ad14dd86e2f9e4bf3230010c3e611c"
+                "reference": "458a89b1c5ff73072c27308566f444c790f76f28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/3c11e7acc6ad14dd86e2f9e4bf3230010c3e611c",
-                "reference": "3c11e7acc6ad14dd86e2f9e4bf3230010c3e611c",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/458a89b1c5ff73072c27308566f444c790f76f28",
+                "reference": "458a89b1c5ff73072c27308566f444c790f76f28",
                 "shasum": ""
             },
             "require": {
@@ -822,7 +889,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2018-05-02T15:22:18+00:00"
+            "time": "2018-05-08T13:30:15+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -889,16 +956,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.44",
+            "version": "1.0.45",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "168dbe519737221dc87d17385cde33073881fd02"
+                "reference": "a99f94e63b512d75f851b181afcdf0ee9ebef7e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/168dbe519737221dc87d17385cde33073881fd02",
-                "reference": "168dbe519737221dc87d17385cde33073881fd02",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/a99f94e63b512d75f851b181afcdf0ee9ebef7e6",
+                "reference": "a99f94e63b512d75f851b181afcdf0ee9ebef7e6",
                 "shasum": ""
             },
             "require": {
@@ -969,7 +1036,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2018-04-06T09:58:14+00:00"
+            "time": "2018-05-07T08:44:23+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -3431,16 +3498,16 @@
         },
         {
             "name": "mockery/mockery",
-            "version": "1.0",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mockery/mockery.git",
-                "reference": "1bac8c362b12f522fdd1f1fa3556284c91affa38"
+                "reference": "99e29d3596b16dabe4982548527d5ddf90232e99"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mockery/mockery/zipball/1bac8c362b12f522fdd1f1fa3556284c91affa38",
-                "reference": "1bac8c362b12f522fdd1f1fa3556284c91affa38",
+                "url": "https://api.github.com/repos/mockery/mockery/zipball/99e29d3596b16dabe4982548527d5ddf90232e99",
+                "reference": "99e29d3596b16dabe4982548527d5ddf90232e99",
                 "shasum": ""
             },
             "require": {
@@ -3449,7 +3516,8 @@
                 "php": ">=5.6.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "~5.7|~6.1"
+                "phpdocumentor/phpdocumentor": "^2.9",
+                "phpunit/phpunit": "~5.7.10|~6.5"
             },
             "type": "library",
             "extra": {
@@ -3478,8 +3546,8 @@
                     "homepage": "http://davedevelopment.co.uk"
                 }
             ],
-            "description": "Mockery is a simple yet flexible PHP mock object framework for use in unit testing with PHPUnit, PHPSpec or any other testing framework. Its core goal is to offer a test double framework with a succinct API capable of clearly defining all possible object operations and interactions using a human readable Domain Specific Language (DSL). Designed as a drop in alternative to PHPUnit's phpunit-mock-objects library, Mockery is easy to integrate with PHPUnit and can operate alongside phpunit-mock-objects without the World ending.",
-            "homepage": "http://github.com/mockery/mockery",
+            "description": "Mockery is a simple yet flexible PHP mock object framework",
+            "homepage": "https://github.com/mockery/mockery",
             "keywords": [
                 "BDD",
                 "TDD",
@@ -3492,7 +3560,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2017-10-06T16:20:43+00:00"
+            "time": "2018-05-08T08:54:48+00:00"
         },
         {
             "name": "myclabs/deep-copy",
