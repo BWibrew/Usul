@@ -100,14 +100,6 @@ class SiteController extends Controller
         }
 
         try {
-            $wpVersion = $wpConnection->version($site->root_uri);
-        } catch (Exception $exception) {
-            report($exception);
-            $status['version'] = 'API connection problem. Error code: '.$exception->getCode();
-            $connection['authenticated'] = false;
-        }
-
-        try {
             $namespaces = $wpConnection->namespaces($site->root_uri);
         } catch (Exception $exception) {
             report($exception);
@@ -118,14 +110,23 @@ class SiteController extends Controller
         if (! array_search('wp-site-monitor/v1', $namespaces)) {
             $status['namespaces'] = 'WP Site Monitor not detected.';
             $connection['site_monitor'] = false;
-        }
-
-        try {
-            $plugins = $wpConnection->plugins($site->root_uri);
-        } catch (Exception $exception) {
-            report($exception);
-            $status['plugins'] = 'API connection problem. Error code: '.$exception->getCode();
             $connection['authenticated'] = false;
+        } else {
+            try {
+                $wpVersion = $wpConnection->version($site->root_uri);
+            } catch (Exception $exception) {
+                report($exception);
+                $status['version'] = 'API connection problem. Error code: '.$exception->getCode();
+                $connection['authenticated'] = false;
+            }
+
+            try {
+                $plugins = $wpConnection->plugins($site->root_uri);
+            } catch (Exception $exception) {
+                report($exception);
+                $status['plugins'] = 'API connection problem. Error code: '.$exception->getCode();
+                $connection['authenticated'] = false;
+            }
         }
 
         return view('sites.detail', [

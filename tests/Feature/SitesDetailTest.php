@@ -74,7 +74,7 @@ class SitesDetailTest extends TestCase
     /** @test */
     public function it_displays_a_notice_if_api_cannot_be_reached()
     {
-        $this->mockResponses([['status_code' => 500], [], ['status_code' => 500], []]);
+        $this->mockResponses([[], ['status_code' => 500]]);
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -92,7 +92,7 @@ class SitesDetailTest extends TestCase
     /** @test */
     public function it_displays_wp_version()
     {
-        $this->mockResponses([[], ['body' => '4.9.2']]);
+        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]], ['body' => '4.9.2']]);
 
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee('4.9.2');
     }
@@ -102,8 +102,8 @@ class SitesDetailTest extends TestCase
     {
         $this->mockResponses([
             [],
-            ['status_code' => 401],
             ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
+            ['status_code' => 401],
             [],
         ]);
 
@@ -123,7 +123,7 @@ class SitesDetailTest extends TestCase
     /** @test */
     public function it_displays_a_notice_if_wp_site_monitor_namespace_is_not_detected()
     {
-        $this->mockResponses([[], [], ['body' => ['namespaces' => ['wp/v2', 'not-wp-site-monitor/v1']]], []]);
+        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'not-wp-site-monitor/v1']]], [], []]);
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -132,7 +132,7 @@ class SitesDetailTest extends TestCase
                  'connection'  => [
                      'wp_rest'       => true,
                      'site_monitor'  => false,
-                     'authenticated' => true,
+                     'authenticated' => false,
                  ],
                  'namespaces' => ['wp/v2', 'not-wp-site-monitor/v1'],
              ])
@@ -178,7 +178,7 @@ class SitesDetailTest extends TestCase
                 'Active' => false,
             ],
         ];
-        $this->mockResponses([[], [], [], ['body' => $expectedPlugins]]);
+        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]], [], ['body' => $expectedPlugins]]);
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -190,11 +190,31 @@ class SitesDetailTest extends TestCase
     /** @test */
     public function it_displays_namespaces()
     {
-        $this->mockResponses([[], [], ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]], []]);
+        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]], [], []]);
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
              ->assertSee('wp/v2')
              ->assertSee('wp-site-monitor/v1');
+    }
+
+    /** @test */
+    public function it_does_not_send_requests_to_wp_site_monitor_if_namespace_is_not_detected()
+    {
+        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'not-wp-site-monitor/v1']]]]);
+
+        $this->logIn()
+             ->get('/sites/'.$this->site->id)
+             ->assertViewHasAll([
+                 'isConnected' => true,
+                 'connection'  => [
+                     'wp_rest'       => true,
+                     'site_monitor'  => false,
+                     'authenticated' => false,
+                 ],
+                 'namespaces' => ['wp/v2', 'not-wp-site-monitor/v1'],
+             ])
+             ->assertSee('WP Site Monitor not detected.')
+             ->assertDontSee('API connection problem. Error code: 404');
     }
 }
