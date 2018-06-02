@@ -118,14 +118,16 @@ class SiteController extends Controller
         if (! array_search('wp-site-monitor/v1', $namespaces)) {
             $status['namespaces'] = 'WP Site Monitor not detected.';
             $connection['site_monitor'] = false;
-            $connection['authenticated'] = false;
         } else {
             try {
                 $wpVersion = $wpConnection->version($site->root_uri);
             } catch (Exception $exception) {
                 report($exception);
                 $status['version'] = 'API connection problem. Error code: '.$exception->getCode();
-                $connection['authenticated'] = false;
+
+                if ($exception->getCode() === 401) {
+                    $connection['authenticated'] = false;
+                }
             }
 
             try {
@@ -133,7 +135,10 @@ class SiteController extends Controller
             } catch (Exception $exception) {
                 report($exception);
                 $status['plugins'] = 'API connection problem. Error code: '.$exception->getCode();
-                $connection['authenticated'] = false;
+
+                if ($exception->getCode() === 401) {
+                    $connection['authenticated'] = false;
+                }
             }
         }
 

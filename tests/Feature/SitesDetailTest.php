@@ -74,7 +74,7 @@ class SitesDetailTest extends TestCase
     /** @test */
     public function it_displays_a_notice_if_api_cannot_be_reached()
     {
-        $this->mockResponses([[], ['status_code' => 500]]);
+        $this->mockResponses([['status_code' => 500], ['status_code' => 500]]);
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -132,7 +132,7 @@ class SitesDetailTest extends TestCase
                  'connection'  => [
                      'wp_rest'       => true,
                      'site_monitor'  => false,
-                     'authenticated' => false,
+                     'authenticated' => true,
                  ],
                  'namespaces' => ['wp/v2', 'not-wp-site-monitor/v1'],
              ])
@@ -210,7 +210,7 @@ class SitesDetailTest extends TestCase
                  'connection'  => [
                      'wp_rest'       => true,
                      'site_monitor'  => false,
-                     'authenticated' => false,
+                     'authenticated' => true,
                  ],
                  'namespaces' => ['wp/v2', 'not-wp-site-monitor/v1'],
              ])
