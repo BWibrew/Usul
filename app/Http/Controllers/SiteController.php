@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Site;
 use Exception;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use App\ApiConnections\Wordpress;
+use Illuminate\Validation\Rule;
 
 class SiteController extends Controller
 {
@@ -48,7 +50,13 @@ class SiteController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'url' => 'required|url|unique:sites,url',
+            'url' => [
+                'required',
+                'url',
+                Rule::unique('sites', 'url')->where(function (Builder $query) {
+                    return $query->whereNull('deleted_at');
+                }),
+            ],
         ]);
 
         $site = Site::create(['url' => trim($request->input('url'), '/\\')]);

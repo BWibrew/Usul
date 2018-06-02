@@ -65,4 +65,37 @@ class SitesNewTest extends TestCase
             'name' => null,
         ]);
     }
+
+    /** @test */
+    public function it_can_be_added_then_deleted_then_added_again()
+    {
+        $this->mockResponses([
+            ['headers' => ['Link' => self::API_BASE_URL.'/'.self::API_ROOT_URI]],
+            ['body' => ['name' => 'Example Site Name']],
+            ['headers' => ['Link' => self::API_BASE_URL.'/'.self::API_ROOT_URI]],
+            ['body' => ['name' => 'Example Site Name']],
+        ]);
+
+        $this->logIn()->post('/sites', ['url' => self::API_BASE_URL]);
+
+        $this->assertDatabaseHas('sites', [
+            'id' => 1,
+            'url' => self::API_BASE_URL,
+            'root_uri' => self::API_BASE_URL.'/'.self::API_ROOT_URI,
+            'name' => 'Example Site Name',
+            'deleted_at' => null,
+        ]);
+
+        $this->logIn()->delete('/sites/1');
+
+        $this->logIn()->post('/sites', ['url' => self::API_BASE_URL]);
+
+        $this->assertDatabaseHas('sites', [
+            'id' => 2,
+            'url' => self::API_BASE_URL,
+            'root_uri' => self::API_BASE_URL.'/'.self::API_ROOT_URI,
+            'name' => 'Example Site Name',
+            'deleted_at' => null,
+        ]);
+    }
 }
