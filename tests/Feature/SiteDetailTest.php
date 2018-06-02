@@ -6,7 +6,7 @@ use App\Site;
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class SitesDetailTest extends TestCase
+class SiteDetailTest extends TestCase
 {
     use RefreshDatabase;
 
