@@ -64,7 +64,7 @@
                                 <span><strong>WordPress REST API:</strong></span>
                             </div>
                             <div class="col-md-8">
-                                <span class="p-1 mb-2 text-white {{ $isConnected && $connection['wp_rest'] ? 'bg-success' : 'bg-danger' }}">{{ $isConnected && $connection['wp_rest'] ? 'Successful!' : 'Not Successful!' }}</span>
+                                <span class="p-2 mb-2 text-white font-weight-bold {{ $isConnected && $connection['wp_rest'] ? 'bg-success' : 'bg-danger' }}">{{ $isConnected && $connection['wp_rest'] ? 'OK!' : 'Error!' }}</span>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -72,7 +72,7 @@
                                 <span><strong>Authenticated:</strong></span>
                             </div>
                             <div class="col-md-8">
-                                <span class="p-1 mb-2 text-white {{ $isConnected && $connection['authenticated'] ? 'bg-success' : 'bg-danger' }}">{{ $isConnected && $connection['authenticated'] ? 'Successful!' : 'Not Successful!' }}</span>
+                                <span class="p-2 mb-2 text-white font-weight-bold {{ $isConnected && $connection['authenticated'] ? 'bg-success' : 'bg-danger' }}">{{ $isConnected && $connection['authenticated'] ? 'OK!' : 'Error!' }}</span>
                             </div>
                         </div>
                         <div class="row mb-3">
@@ -80,7 +80,7 @@
                                 <span><strong>WP Site Monitor:</strong></span>
                             </div>
                             <div class="col-md-8">
-                                <span class="p-1 mb-2 text-white {{ $isConnected && $connection['site_monitor'] ? 'bg-success' : 'bg-danger' }}">{{ $isConnected && $connection['site_monitor'] ? 'Successful!' : 'Not Successful!' }}</span>
+                                <span class="p-2 mb-2 text-white font-weight-bold {{ $isConnected && $connection['site_monitor'] ? 'bg-success' : 'bg-danger' }}">{{ $isConnected && $connection['site_monitor'] ? 'OK!' : 'Error!' }}</span>
                             </div>
                         </div>
                         <div class="row mb-3">
