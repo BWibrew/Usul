@@ -114,13 +114,22 @@ class Wordpress
      *
      * @param string $uri
      *
-     * @return mixed
+     * @return array
      */
     public function namespaces(string $uri)
     {
-        $response = (string) $this->apiGet($uri)->getBody();
+        try {
+            $response = (string) $this->apiGet($uri)->getBody();
+            $response = json_decode($response, true);
 
-        return json_decode($response, true)['namespaces'];
+            if (key_exists('namespaces', $response)) {
+                return $response['namespaces'];
+            }
+        } catch (Exception $exception) {
+            report($exception);
+        }
+
+        return [];
     }
 
     /**
@@ -142,36 +151,73 @@ class Wordpress
      *
      * @param string $uri
      *
-     * @return bool
+     * @return array
      */
-    public function apiConnected(string $uri)
+    public function connectionStatus(string $uri)
     {
-        $response = $this->apiGet($uri);
+        try {
+            $this->apiGet($uri);
+        } catch (Exception $exception) {
+            report($exception);
 
-        if ($response->getStatusCode() !== 200 || is_null(json_decode($response->getBody()))) {
-            return false;
+            return [
+                'connected' => false,
+                'authenticated' => false,
+            ];
         }
 
-        return true;
+        return [
+            'connected' => true,
+            'authenticated' => $this->authenticationStatus($uri),
+        ];
+    }
+
+    /**
+     * Check authentication status.
+     *
+     * @param string $uri
+     *
+     * @return bool
+     */
+    public function authenticationStatus(string $uri): bool
+    {
+        switch (strtolower($this->authType)) {
+            case 'jwt':
+                try {
+                    $this->apiPost($uri.'/'.self::JWT_V1_URI.'/validate', ['headers' => $this->getAuthHeaders()]);
+
+                    return true;
+                } catch (Exception $exception) {
+                    report($exception);
+                }
+
+                break;
+        }
+
+        return false;
     }
 
     /**
      * @param string $uri
      *
      * @return string
-     * @throws Exception
      */
     public function version(string $uri)
     {
-        $response = $this->apiGet(
-            $uri.'/'.self::WPSM_V1_URI.'/wp-version',
-            ['headers' => $this->getAuthHeaders()]
-        );
+        try {
+            $response = $this->apiGet(
+                $uri.'/'.self::WPSM_V1_URI.'/wp-version',
+                ['headers' => $this->getAuthHeaders()]
+            );
+            $response = (string) $response->getBody();
+            $response = json_decode($response, true);
 
-        $response = (string) $response->getBody();
-        $response = json_decode($response, true);
+            return $response;
+        } catch (Exception $exception) {
+            report($exception);
+        }
 
-        return is_string($response) ? $response : null;
+        return null;
     }
 
     /**
@@ -196,12 +242,18 @@ class Wordpress
      */
     public function plugins(string $uri)
     {
-        $response = (string) $this->apiGet(
-            $uri.'/'.self::WPSM_V1_URI.'/plugins',
-            ['headers' => $this->getAuthHeaders()]
-        )->getBody();
+        try {
+            $response = (string) $this->apiGet(
+                $uri.'/'.self::WPSM_V1_URI.'/plugins',
+                ['headers' => $this->getAuthHeaders()]
+            )->getBody();
 
-        return json_decode($response, true);
+            return json_decode($response, true);
+        } catch (Exception $exception) {
+            report($exception);
+        }
+
+        return [];
     }
 
     /**
@@ -212,9 +264,15 @@ class Wordpress
      * @param array $parameters
      *
      * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function apiGet(string $uri, array $parameters = [])
     {
+        app('log')->debug('API GET', [
+            'uri' => $uri,
+            'parameters' => $parameters,
+        ]);
+
         return $this->api->request('GET', $uri, $parameters);
     }
 
@@ -225,9 +283,15 @@ class Wordpress
      * @param array $parameters
      *
      * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function apiPost(string $uri, array $parameters)
     {
+        app('log')->debug('API POST', [
+            'uri' => $uri,
+            'parameters' => $parameters,
+        ]);
+
         return $this->api->request('POST', $uri, $parameters);
     }
 

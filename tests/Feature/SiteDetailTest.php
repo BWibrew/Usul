@@ -85,14 +85,18 @@ class SiteDetailTest extends TestCase
                      'site_monitor' => false,
                      'authenticated' => false,
                  ],
-             ])
-             ->assertSee('API connection problem. Error code: 500');
+             ]);
     }
 
     /** @test */
     public function it_displays_wp_version()
     {
-        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]], ['body' => '4.9.2']]);
+        $this->mockResponses([
+            [],
+            ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
+            ['body' => '4.9.2'],
+            [],
+        ]);
 
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee('4.9.2');
     }
@@ -116,8 +120,7 @@ class SiteDetailTest extends TestCase
                      'site_monitor'  => true,
                      'authenticated' => false,
                  ],
-             ])
-             ->assertSee('API connection problem. Error code: 401');
+             ]);
     }
 
     /** @test */
@@ -178,7 +181,12 @@ class SiteDetailTest extends TestCase
                 'Active' => false,
             ],
         ];
-        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]], [], ['body' => $expectedPlugins]]);
+        $this->mockResponses([
+            [],
+            ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
+            [],
+            ['body' => $expectedPlugins]
+        ]);
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -214,7 +222,6 @@ class SiteDetailTest extends TestCase
                  ],
                  'namespaces' => ['wp/v2', 'not-wp-site-monitor/v1'],
              ])
-             ->assertSee('WP Site Monitor not detected.')
-             ->assertDontSee('API connection problem. Error code: 404');
+             ->assertSee('WP Site Monitor not detected.');
     }
 }
