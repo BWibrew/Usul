@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Site;
 use Exception;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
 use App\ApiConnections\Wordpress;
@@ -80,9 +81,6 @@ class SiteController extends Controller
      */
     public function show(Site $site, Wordpress $wpConnection)
     {
-        $status = [];
-        $plugins = [];
-        $wpVersion = 'Unknown';
         $connection = [
             'wp_rest' => true,
             'site_monitor' => true,
@@ -92,7 +90,7 @@ class SiteController extends Controller
         $wpConnection->authType($site->auth_type ?: null);
         $wpConnection->authToken($site->auth_token ?: null);
 
-        $connectionStatus = $wpConnection->connectionStatus($site->root_uri);
+        $connectionStatus = $this->getGetConnectionStatus($site, $wpConnection);
 
         if (is_null($site->root_uri) || ! $connectionStatus['connected']) {
             $connection['wp_rest'] = false;
@@ -101,7 +99,8 @@ class SiteController extends Controller
         }
 
         $connection['authenticated'] = $connectionStatus['authenticated'];
-        $namespaces = $wpConnection->namespaces($site->root_uri);
+
+        $namespaces = $this->getNamespaces($site, $wpConnection);
 
         if (! array_search('wp-site-monitor/v1', $namespaces)) {
             $status['namespaces'] = 'WP Site Monitor not detected.';
@@ -109,17 +108,17 @@ class SiteController extends Controller
         }
 
         if ($connection['site_monitor']) {
-            $wpVersion = $wpConnection->version($site->root_uri) ?? 'Unknown';
-            $plugins = $wpConnection->plugins($site->root_uri);
+            $wpVersion = $this->getWpVersion($site, $wpConnection);
+            $plugins = $this->getPlugins($site, $wpConnection);
         }
 
         return view('sites.detail', [
             'site' => $site,
-            'wpVersion' => $wpVersion,
-            'status' => $status,
+            'wpVersion' => $wpVersion ?? 'Unknown',
+            'status' => $status ?? [],
             'connection' => $connection,
             'isConnected' => $connection['wp_rest'],
-            'plugins' => $plugins,
+            'plugins' => $plugins ?? [],
             'namespaces' => $namespaces,
         ]);
     }
@@ -179,25 +178,107 @@ class SiteController extends Controller
      * @param Site $site
      *
      * @return Site
+     * @throws GuzzleException
      */
     protected function populateFromApi(Site $site)
     {
         $wpConnection = app(Wordpress::class);
 
         try {
-            $site->root_uri = trim($wpConnection->discover($site->url), '/\\');
-        } catch (Exception $exception) {
+            $uri = trim($wpConnection->discover($site->url), '/\\');
+            $site->root_uri = empty($uri) ? null : $uri;
+        } catch (GuzzleException $exception) {
             report($exception);
         }
 
-        try {
-            $site->name = is_null($site->root_uri) ? null : $wpConnection->siteName($site->root_uri);
-        } catch (Exception $exception) {
-            report($exception);
-        }
+        $site->name = is_null($site->root_uri) ? null : $wpConnection->siteName($site->root_uri);
 
         $site->save();
 
         return $site;
+    }
+
+    /**
+     * Get the connection status of the site.
+     *
+     * @param Site $site
+     * @param Wordpress $wpConnection
+     * @param array $connectionStatus
+     *
+     * @return array
+     */
+    protected function getGetConnectionStatus(
+        Site $site,
+        Wordpress $wpConnection,
+        array $connectionStatus = ['connected' => false, 'authenticated' => false]
+    ): array {
+        try {
+            $connectionStatus = $wpConnection->connectionStatus($site->root_uri);
+        } catch (GuzzleException $exception) {
+            $connectionStatus['connected'] = $exception->getCode() === 401;
+            report($exception);
+        }
+
+        return $connectionStatus;
+    }
+
+    /**
+     * Get the namespaces of the site.
+     *
+     * @param Site $site
+     * @param Wordpress $wpConnection
+     * @param array $namespaces
+     *
+     * @return array
+     */
+    protected function getNamespaces(Site $site, Wordpress $wpConnection, array $namespaces = []): array
+    {
+        try {
+            $namespaces = $wpConnection->namespaces($site->root_uri);
+        } catch (GuzzleException $exception) {
+            report($exception);
+        }
+
+        return $namespaces;
+    }
+
+    /**
+     * Get the WordPress version of the site.
+     *
+     * @param Site $site
+     * @param Wordpress $wpConnection
+     * @param string $wpVersion
+     *
+     * @return string
+     */
+    protected function getWpVersion(Site $site, Wordpress $wpConnection, string $wpVersion = 'Unknown'): string
+    {
+        try {
+            $wpVersion = $wpConnection->version($site->root_uri);
+        } catch (GuzzleException $exception) {
+            report($exception);
+        }
+
+        return $wpVersion;
+    }
+
+    /**
+     * Get the plugins installed on the site.
+     *
+     * @param Site $site
+     * @param Wordpress $wpConnection
+     * @param array $plugins
+     *
+     * @return array
+     */
+    protected function getPlugins(Site $site, Wordpress $wpConnection, array $plugins = []): array
+    {
+        try {
+            $plugins = $wpConnection->plugins($site->root_uri);
+        } catch (GuzzleException $exception) {
+            report($exception);
+        }
+
+        return $plugins;
     }
 }

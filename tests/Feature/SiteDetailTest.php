@@ -30,7 +30,7 @@ class SiteDetailTest extends TestCase
     /** @test */
     public function it_displays_name()
     {
-        $this->mockResponses([[], []]);
+        $this->mockThreeResponses();
 
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee($this->site->name);
     }
@@ -38,7 +38,7 @@ class SiteDetailTest extends TestCase
     /** @test */
     public function it_displays_url()
     {
-        $this->mockResponses([[], []]);
+        $this->mockThreeResponses();
 
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee($this->site->url);
     }
@@ -46,7 +46,7 @@ class SiteDetailTest extends TestCase
     /** @test */
     public function it_displays_root_uri()
     {
-        $this->mockResponses([[], []]);
+        $this->mockThreeResponses();
 
         $this->logIn()->get('/sites/'.$this->site->id)->assertSee($this->site->root_uri);
     }
@@ -54,7 +54,7 @@ class SiteDetailTest extends TestCase
     /** @test */
     public function it_links_to_edit_page()
     {
-        $this->mockResponses([[], []]);
+        $this->mockThreeResponses();
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -64,7 +64,7 @@ class SiteDetailTest extends TestCase
     /** @test */
     public function it_links_to_auth_settings_page()
     {
-        $this->mockResponses([[], []]);
+        $this->mockThreeResponses();
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -93,6 +93,7 @@ class SiteDetailTest extends TestCase
     {
         $this->mockResponses([
             [],
+            [],
             ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
             ['body' => '4.9.2'],
             [],
@@ -106,8 +107,9 @@ class SiteDetailTest extends TestCase
     {
         $this->mockResponses([
             [],
-            ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
             ['status_code' => 401],
+            ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
+            [],
             [],
         ]);
 
@@ -126,7 +128,13 @@ class SiteDetailTest extends TestCase
     /** @test */
     public function it_displays_a_notice_if_wp_site_monitor_namespace_is_not_detected()
     {
-        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'not-wp-site-monitor/v1']]], [], []]);
+        $this->mockResponses([
+            [],
+            [],
+            ['body' => ['namespaces' => ['wp/v2', 'not-wp-site-monitor/v1']]],
+            [],
+            []
+        ]);
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -183,6 +191,7 @@ class SiteDetailTest extends TestCase
         ];
         $this->mockResponses([
             [],
+            [],
             ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
             [],
             ['body' => $expectedPlugins]
@@ -198,7 +207,13 @@ class SiteDetailTest extends TestCase
     /** @test */
     public function it_displays_namespaces()
     {
-        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]], [], []]);
+        $this->mockResponses([
+            [],
+            [],
+            ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
+            [],
+            [],
+        ]);
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -209,7 +224,7 @@ class SiteDetailTest extends TestCase
     /** @test */
     public function it_does_not_send_requests_to_wp_site_monitor_if_namespace_is_not_detected()
     {
-        $this->mockResponses([[], ['body' => ['namespaces' => ['wp/v2', 'not-wp-site-monitor/v1']]]]);
+        $this->mockResponses([[], [], ['body' => ['namespaces' => ['wp/v2', 'not-wp-site-monitor/v1']]]]);
 
         $this->logIn()
              ->get('/sites/'.$this->site->id)
@@ -223,5 +238,10 @@ class SiteDetailTest extends TestCase
                  'namespaces' => ['wp/v2', 'not-wp-site-monitor/v1'],
              ])
              ->assertSee('WP Site Monitor not detected.');
+    }
+
+    protected function mockThreeResponses()
+    {
+        $this->mockResponses([[], [], []]);
     }
 }

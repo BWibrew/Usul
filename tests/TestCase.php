@@ -42,6 +42,6 @@ abstract class TestCase extends BaseTestCase
      */
     protected function wordpress()
     {
-        return $this->app->make('ApiConnections\Wordpress');
+        return $this->app->make(\App\ApiConnections\Wordpress::class);
     }
 }

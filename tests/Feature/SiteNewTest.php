@@ -52,12 +52,12 @@ class SiteNewTest extends TestCase
     /** @test */
     public function it_will_redirect_to_edit_page_if_discovery_fails()
     {
-        $this->mockResponse([]);
+        $this->mockResponse();
 
         $this->logIn()->post('/sites', [
             'url' => self::API_BASE_URL,
         ])->assertRedirect('/sites/1/edit/')
-             ->assertSessionHas('discovery', 'fail');
+          ->assertSessionHas('discovery', 'fail');
 
         $this->assertDatabaseHas('sites', [
             'url' => self::API_BASE_URL,

@@ -16,14 +16,6 @@ class WordpressTest extends TestCase
     }
 
     /** @test */
-    public function it_throws_an_exception_when_a_url_does_not_return_link_header()
-    {
-        $this->expectException('Exception');
-        $this->mockResponse();
-        $this->wordpress()->discover(self::API_BASE_URL);
-    }
-
-    /** @test */
     public function it_throws_an_exception_when_a_url_cannot_be_reached()
     {
         $this->expectException('Exception');

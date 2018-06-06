@@ -59,7 +59,7 @@ class Wordpress
      *
      * @return string
      */
-    public function authToken($authToken = null)
+    public function authToken($authToken = null): string
     {
         if ($authToken) {
             $this->authToken = $authToken;
@@ -75,7 +75,7 @@ class Wordpress
      *
      * @return string
      */
-    public function authType($authType = null)
+    public function authType($authType = null): string
     {
         if ($authType) {
             $this->authType = $authType;
@@ -89,21 +89,16 @@ class Wordpress
      *
      * @param string $uri
      *
-     * @return mixed
-     * @throws Exception
+     * @return string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function discover(string $uri)
+    public function discover(string $uri): string
     {
         $response = $this->apiGet($uri);
-
-        if ($response->getStatusCode() !== 200) {
-            throw new Exception('Could not connect to URL.');
-        }
-
         $response = $response->getHeader('Link');
 
         if (! count($response) > 0) {
-            throw new Exception('API root could not be discovered');
+            return '';
         }
 
         return str_replace(['<', '>'], '', explode(';', $response[0])[0]);
@@ -115,18 +110,15 @@ class Wordpress
      * @param string $uri
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function namespaces(string $uri)
+    public function namespaces(string $uri): array
     {
-        try {
-            $response = (string) $this->apiGet($uri)->getBody();
-            $response = json_decode($response, true);
+        $response = $this->apiGet($uri)->getBody()->getContents();
+        $response = json_decode($response, true);
 
-            if (key_exists('namespaces', $response)) {
-                return $response['namespaces'];
-            }
-        } catch (Exception $exception) {
-            report($exception);
+        if (key_exists('namespaces', $response)) {
+            return $response['namespaces'];
         }
 
         return [];
@@ -137,13 +129,15 @@ class Wordpress
      *
      * @param string $uri
      *
-     * @return mixed
+     * @return string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function siteName(string $uri)
+    public function siteName(string $uri): string
     {
-        $response = (string) $this->apiGet($uri)->getBody();
+        $response = $this->apiGet($uri)->getBody()->getContents();
+        $response = json_decode($response, true);
 
-        return json_decode($response, true)['name'];
+        return key_exists('name', $response) ? $response['name'] : '';
     }
 
     /**
@@ -152,22 +146,12 @@ class Wordpress
      * @param string $uri
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function connectionStatus(string $uri)
+    public function connectionStatus(string $uri): array
     {
-        try {
-            $this->apiGet($uri);
-        } catch (Exception $exception) {
-            report($exception);
-
-            return [
-                'connected' => false,
-                'authenticated' => false,
-            ];
-        }
-
         return [
-            'connected' => true,
+            'connected' => $this->apiGet($uri)->getStatusCode() === 200,
             'authenticated' => $this->authenticationStatus($uri),
         ];
     }
@@ -178,18 +162,16 @@ class Wordpress
      * @param string $uri
      *
      * @return bool
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function authenticationStatus(string $uri): bool
     {
         switch (strtolower($this->authType)) {
             case 'jwt':
-                try {
-                    $this->apiPost($uri.'/'.self::JWT_V1_URI.'/validate', ['headers' => $this->getAuthHeaders()]);
-
-                    return true;
-                } catch (Exception $exception) {
-                    report($exception);
-                }
+                return $this->apiPost(
+                    $uri.'/'.self::JWT_V1_URI.'/validate',
+                    ['headers' => $this->getAuthHeaders()]
+                )->getStatusCode() === 200;
 
                 break;
         }
@@ -198,26 +180,23 @@ class Wordpress
     }
 
     /**
+     * Get the WordPress version number.
+     *
      * @param string $uri
      *
      * @return string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function version(string $uri)
+    public function version(string $uri): string
     {
-        try {
-            $response = $this->apiGet(
-                $uri.'/'.self::WPSM_V1_URI.'/wp-version',
-                ['headers' => $this->getAuthHeaders()]
-            );
-            $response = (string) $response->getBody();
-            $response = json_decode($response, true);
+        $response = $this->apiGet(
+            $uri.'/'.self::WPSM_V1_URI.'/wp-version',
+            ['headers' => $this->getAuthHeaders()]
+        );
+        $response = $response->getBody()->getContents();
+        $response = json_decode($response, true);
 
-            return $response;
-        } catch (Exception $exception) {
-            report($exception);
-        }
-
-        return null;
+        return is_string($response) ? $response : 'Unknown';
     }
 
     /**
@@ -227,33 +206,31 @@ class Wordpress
      * @param array $credentials
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function jwtAuth(string $uri, array $credentials)
+    public function jwtAuth(string $uri, array $credentials): array
     {
-        $response = (string) $this->apiPost($uri.'/'.self::JWT_V1_URI, ['json' => $credentials])->getBody();
+        $response = $this->apiPost($uri.'/'.self::JWT_V1_URI, ['json' => $credentials])->getBody()->getContents();
 
         return json_decode($response, true);
     }
 
     /**
+     * Get list of installed plugins.
+     *
      * @param string $uri
      *
      * @return array
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function plugins(string $uri)
+    public function plugins(string $uri): array
     {
-        try {
-            $response = (string) $this->apiGet(
-                $uri.'/'.self::WPSM_V1_URI.'/plugins',
-                ['headers' => $this->getAuthHeaders()]
-            )->getBody();
+        $response = (string) $this->apiGet(
+            $uri.'/'.self::WPSM_V1_URI.'/plugins',
+            ['headers' => $this->getAuthHeaders()]
+        )->getBody();
 
-            return json_decode($response, true);
-        } catch (Exception $exception) {
-            report($exception);
-        }
-
-        return [];
+        return json_decode($response, true);
     }
 
     /**
@@ -263,7 +240,7 @@ class Wordpress
      *
      * @param array $parameters
      *
-     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function apiGet(string $uri, array $parameters = [])
@@ -282,7 +259,7 @@ class Wordpress
      * @param string $uri
      * @param array $parameters
      *
-     * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @return \Psr\Http\Message\ResponseInterface
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     protected function apiPost(string $uri, array $parameters)
@@ -300,7 +277,7 @@ class Wordpress
      *
      * @return array
      */
-    protected function getAuthHeaders()
+    protected function getAuthHeaders(): array
     {
         switch (strtolower($this->authType)) {
             case 'jwt':
