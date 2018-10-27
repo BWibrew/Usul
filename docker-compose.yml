@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  usul_app:
+    build: .
+    container_name: usul_app
+    depends_on:
+      - usul_db
+    ports:
+      - 8080:80
+    volumes:
+      - ./app:/var/www/app
+      - ./bootstrap:/var/www/bootstrap
+      - ./config:/var/www/config
+      - ./database:/var/www/database
+      - ./public:/var/www/public
+      - ./resources:/var/www/resources
+      - ./routes:/var/www/routes
+      - ./storage:/var/www/storage
+      - ./vendor:/var/www/vendor
+      - ./artisan:/var/www/artisan
+    env_file:
+      - .env
+    environment:
+      - DB_CONNECTION=mysql
+      - DB_HOST=usul_db
+      - DB_PORT=3306
+      - DB_DATABASE=usul
+      - DB_USERNAME=homestead
+      - DB_PASSWORD=secret
+
+  usul_db:
+    image: mysql:5.7
+    container_name: usul_db
+    volumes:
+      - usul_db:/var/lib/mysql
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=homestead
+      - MYSQL_PASSWORD=secret
+      - MYSQL_DATABASE=usul
+
+volumes:
+  usul_db:

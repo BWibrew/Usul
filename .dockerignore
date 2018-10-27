@@ -1,0 +1,11 @@
+### IDE files
+/.idea/
+
+### GIT files
+/.git/
+
+vendor/**
+app/cache/**
+app/logs/**
+var/**
+
