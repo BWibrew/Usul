@@ -10,8 +10,8 @@ export default function() {
      * code may be modified to fit the specific needs of your application.
      */
 
-    window.Popper = require('popper.js').default
     try {
+        window.Popper = require('popper.js').default
         window.$ = window.jQuery = require('jquery')
 
         require('bootstrap')
@@ -38,6 +38,8 @@ export default function() {
 
     if (token) {
         window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content
+    } else {
+      console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
     }
 
     /**
