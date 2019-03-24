@@ -133,7 +133,7 @@ class SiteDetailTest extends TestCase
             [],
             ['body' => ['namespaces' => ['wp/v2', 'not-wp-site-monitor/v1']]],
             [],
-            []
+            [],
         ]);
 
         $this->logIn()
@@ -194,7 +194,7 @@ class SiteDetailTest extends TestCase
             [],
             ['body' => ['namespaces' => ['wp/v2', 'wp-site-monitor/v1']]],
             [],
-            ['body' => $expectedPlugins]
+            ['body' => $expectedPlugins],
         ]);
 
         $this->logIn()
