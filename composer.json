@@ -28,7 +28,7 @@
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.1",
         "barryvdh/laravel-ide-helper": "^2.4.1",
-        "beyondcode/laravel-dump-server": "^1.2",
+        "beyondcode/laravel-dump-server": "^1.2.2",
         "codacy/coverage": "^1.4",
         "doctrine/dbal": "^2.6",
         "filp/whoops": "~2.0",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd525ed3cbfd7887615be4f7e15c296c",
+    "content-hash": "383676bfb8b46cb4443f09f1e2946421",
     "packages": [
         {
             "name": "bwibrew/laravel-gnu-terry-pratchett",
