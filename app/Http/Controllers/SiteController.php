@@ -4,11 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Site;
 use Exception;
-use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\Request;
-use App\ApiConnections\Wordpress;
 use Illuminate\Validation\Rule;
+use App\ApiConnections\Wordpress;
+use Illuminate\Database\Query\Builder;
+use GuzzleHttp\Exception\GuzzleException;
 
 class SiteController extends Controller
 {

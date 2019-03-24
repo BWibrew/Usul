@@ -2,7 +2,6 @@
 
 namespace App\ApiConnections;
 
-use Exception;
 use GuzzleHttp\Client;
 
 class Wordpress
@@ -117,7 +116,7 @@ class Wordpress
         $response = $this->apiGet($uri)->getBody()->getContents();
         $response = json_decode($response, true);
 
-        if (key_exists('namespaces', $response)) {
+        if (array_key_exists('namespaces', $response)) {
             return $response['namespaces'];
         }
 
@@ -137,7 +136,7 @@ class Wordpress
         $response = $this->apiGet($uri)->getBody()->getContents();
         $response = json_decode($response, true);
 
-        return key_exists('name', $response) ? $response['name'] : '';
+        return array_key_exists('name', $response) ? $response['name'] : '';
     }
 
     /**
