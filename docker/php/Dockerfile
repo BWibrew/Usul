@@ -1,4 +1,4 @@
-FROM php:7.2-apache
+FROM php:7.3-fpm
 
 # Install dependencies
 RUN apt-get update -yq \
@@ -7,13 +7,11 @@ RUN apt-get update -yq \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN a2enmod rewrite
-
 # Add user for laravel application
 RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/bash -g www www
 
 COPY --chown=www-data:www-data . /var/www
 
-COPY /docker/apache/default.conf /etc/apache2/sites-available/000-default.conf
+USER www
 
 WORKDIR /var/www

@@ -1,8 +1,6 @@
-### IDE files
 /.idea/
-
-### GIT files
 /.git/
+/.circleci/
 
 vendor/**
 app/cache/**
