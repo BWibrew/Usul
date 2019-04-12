@@ -8,10 +8,8 @@ RUN apt-get update -yq \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Add user for laravel application
-RUN groupadd -g 1000 www && useradd -u 1000 -ms /bin/bash -g www www
+RUN usermod -u 1000 www-data
 
-COPY --chown=www-data:www-data . /var/www
-
-USER www
+USER www-data
 
 WORKDIR /var/www
