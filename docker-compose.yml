@@ -17,7 +17,7 @@ services:
       - ./docker/php/conf.d/local.ini:/usr/local/etc/php/conf.d/local.ini
 
   usul_web:
-    image: nginx:1.15
+    image: nginx:1.15-alpine
     container_name: usul_web
     restart: unless-stopped
     ports:
