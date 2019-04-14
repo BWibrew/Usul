@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+  usul_app:
+    build: docker/php/.
+    container_name: usul_app
+    depends_on:
+      - usul_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=usul_db
+    working_dir: /var/www
+    volumes:
+      - ./:/var/www
+      - ./docker/php/conf.d/local.ini:/usr/local/etc/php/conf.d/local.ini
+
+  usul_web:
+    image: nginx:1.15-alpine
+    container_name: usul_web
+    restart: unless-stopped
+    ports:
+      - 8080:80
+      - 443:443
+    expose:
+      - 80
+    volumes:
+      - ./public:/var/www/public
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+
+  usul_db:
+    image: mysql:5.7
+    container_name: usul_db
+    restart: unless-stopped
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_USER=homestead
+      - MYSQL_PASSWORD=secret
+      - MYSQL_DATABASE=usul
+    volumes:
+      - usul_db_data:/var/lib/mysql
+      - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+
+volumes:
+  usul_db_data:
