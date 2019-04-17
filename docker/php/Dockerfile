@@ -31,5 +31,3 @@ RUN pecl install xdebug && \
 RUN usermod -u 1000 www-data
 
 USER www-data
-
-WORKDIR /var/www
