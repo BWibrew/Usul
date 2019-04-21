@@ -12,7 +12,7 @@ abstract class TestCase extends BaseTestCase
     const API_BASE_URL = 'https://example.com';
     const API_ROOT_URI = 'api/v1';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

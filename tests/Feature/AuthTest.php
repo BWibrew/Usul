@@ -31,7 +31,7 @@ class AuthTest extends TestCase
 
         $this->post('login', [
             'email' => $user->email,
-            'password' => 'secret',
+            'password' => 'password',
         ])->assertRedirect('sites');
 
         $this->assertEquals($user->id, Auth::id());
@@ -74,8 +74,8 @@ class AuthTest extends TestCase
         $this->post('register', [
             'name' => 'name',
             'email' => 'email@example.com',
-            'password' => 'secret',
-            'password_confirmation' => 'secret',
+            'password' => 'password',
+            'password_confirmation' => 'password',
         ])->assertRedirect('sites');
 
         $this->assertTrue(Auth::check());

@@ -12,7 +12,7 @@ class SiteEditTest extends TestCase
 
     protected $site;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
