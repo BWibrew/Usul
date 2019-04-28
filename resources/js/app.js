@@ -1,11 +1,11 @@
 import init from './bootstrap'
 import vue from 'vue'
-import ExampleOptions from './components/ExampleComponent.vue'
+import LoginForm from './components/LoginForm.vue'
 
 init()
 window.Vue = vue
 
-Vue.component('example', ExampleOptions)
+Vue.component('login-form', LoginForm)
 
 new Vue({
     el: '#app'
