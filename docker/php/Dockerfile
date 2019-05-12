@@ -10,7 +10,6 @@ RUN apt-get update -yqq && \
         libjpeg-dev \
         libpng-dev \
         libfreetype6-dev \
-        libssl-dev \
         libmcrypt-dev && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
