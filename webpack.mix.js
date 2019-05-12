@@ -15,7 +15,7 @@ mix.js('resources/js/app.js', 'public/js')
   .sass('resources/sass/app.scss', 'public/css')
 
 if (!mix.inProduction()) {
-  mix.browserSync('usul.test')
+  mix.browserSync('localhost:8080')
 }
 
 if (mix.inProduction()) {
