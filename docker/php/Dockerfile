@@ -10,7 +10,6 @@ RUN apt-get update -yqq && \
         libjpeg-dev \
         libpng-dev \
         libfreetype6-dev \
-        libssl-dev \
         libmcrypt-dev && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -31,5 +30,3 @@ RUN pecl install xdebug && \
 RUN usermod -u 1000 www-data
 
 USER www-data
-
-WORKDIR /var/www
